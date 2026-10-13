@@ -3,6 +3,7 @@ from django.urls import path
 from apps.accounts import views as acc
 from apps.analytics import views as ana
 from apps.approvals import views as appr
+from apps.assistant import views as ast
 from apps.audit import views as aud
 from apps.bulletin import views as bul
 from apps.placements import views as pl
@@ -23,9 +24,11 @@ urlpatterns = [
     path("api/public/stats", ana.PublicStatsView.as_view()),
     path("api/public/bulletin", bul.PublicBulletinView.as_view()),
     path("api/public/recruit", rec.RecruiterInterestView.as_view()),
-    # common bulletin (any signed-in member)
+    path("api/public/assistant", ast.PublicAssistantView.as_view()),
+    # common bulletin and the assistant (any signed-in member)
     path("api/bulletin", bul.BulletinView.as_view()),
     path("api/bulletin/<int:pk>/join", bul.JoinEventView.as_view()),
+    path("api/assistant", ast.AssistantView.as_view()),
     # student
     path("api/student/me", stu.StudentMeView.as_view()),
     path("api/student/resume", stu.ResumeUploadView.as_view()),
@@ -54,6 +57,7 @@ urlpatterns = [
     path("api/staff/bulletin/<int:pk>/<str:decision>", bul.BulletinModerationView.as_view()),
     path("api/staff/bulletin/<int:pk>/attendance", bul.AttendanceListView.as_view()),
     path("api/staff/reports", ana.StaffReportView.as_view()),
+    path("api/staff/assistant", ast.StaffAssistantView.as_view()),
     path("api/staff/policy", pol.PolicyConfigView.as_view()),
     path("api/staff/flags", pol.PolicyFlagListView.as_view()),
     path("api/staff/audit", aud.AuditLogView.as_view()),

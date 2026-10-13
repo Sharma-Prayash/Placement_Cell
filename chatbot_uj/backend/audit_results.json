@@ -1,0 +1,434 @@
+[
+  {
+    "num": 1,
+    "question": "What are the common technical questions asked in Deloitte cyber risk interviews?",
+    "intent": "interview_preparation",
+    "status": "answered",
+    "generation_mode": "deterministic_fallback",
+    "sources": [
+      {
+        "id": "DELO-SEC-001",
+        "title": "Deloitte - Governance & Compliance",
+        "company": "Deloitte",
+        "domain": "Cybersecurity",
+        "topic": "Governance & Compliance",
+        "difficulty": "medium",
+        "provenance": "reported",
+        "source_title": "Deloitte Advisory Risk & Financial Cyber Consulting Discussions",
+        "source_url": "https://www.nist.gov/cyberframework",
+        "pdf_document": "deloitte_interview_guide.pdf"
+      },
+      {
+        "id": "DELO-CONS-004",
+        "title": "Deloitte - Structured Problem Solving",
+        "company": "Deloitte",
+        "domain": "Consulting & Analytics",
+        "topic": "Structured Problem Solving",
+        "difficulty": "medium",
+        "provenance": "reported",
+        "source_title": "Deloitte Consulting Case Interview Methodology",
+        "source_url": "https://www.deloitte.com/global/en/careers/students.html",
+        "pdf_document": "deloitte_interview_guide.pdf"
+      },
+      {
+        "id": "DELO-CLD-003",
+        "title": "Deloitte - Cloud Security & IAM",
+        "company": "Deloitte",
+        "domain": "Cybersecurity",
+        "topic": "Cloud Security & IAM",
+        "difficulty": "hard",
+        "provenance": "reported",
+        "source_title": "Deloitte Cloud Security Review Practices",
+        "source_url": "https://aws.amazon.com/iam/",
+        "pdf_document": "deloitte_interview_guide.pdf"
+      }
+    ],
+    "answer": "### 1. [REPORTED] Deloitte \u2014 Governance & Compliance\n**Question:** What are the core functions of the NIST Cybersecurity Framework (CSF 2.0), and how do you conduct an initial risk assessment for a client?\n\n**Model Answer:**\nNIST CSF 2.0 defines six core functions: Govern (GO), Identify (ID), Protect (PR), Detect (DE), Respond (RS), and Recover (RC). For an initial client risk assessment: 1) Asset Identification: Catalog hardware, software, sensitive data, and network boundaries. 2) Threat & Vulnerability Analysis: Identify potential threat actors and common vulnerabilities (CVEs, misconfigurations). 3) Likelihood and Impact Scoring: Qualitative/quantitative assessment to determine risk level (Risk = Likelihood x Impact). 4) Gap Analysis: Compare current controls against baseline security controls (NIST 800-53 / ISO 27001). 5) Remediation Roadmap: Prioritize actions based on business risk appetite.\n\n*Difficulty:* `Medium` | *Verified Source:* [Deloitte Advisory Risk & Financial Cyber Consulting Discussions](https://www.nist.gov/cyberframework)\n\n---\n\n### 2. [REPORTED] Deloitte \u2014 Structured Problem Solving\n**Question:** What is the MECE framework in management consulting, and how would you apply it to diagnose a client dropping e-commerce profit margins?\n\n**Model Answer:**\nMECE stands for Mutually Exclusive, Collectively Exhaustive: a problem-structuring framework where problem branches do not overlap (mutually exclusive) and cover all possible causes without gaps (collectively exhaustive). Application to dropping profit margins: Profit = Revenue - Total Costs. 1) Revenue Branch: Revenue = Quantity Sold x Average Price. Check if units sold dropped (lost market share, site downtime, product quality issues) OR if average realized price dropped (excessive discounting, shift to lower-margin product mix). 2) Cost Branch: Total Costs = Fixed Costs + Variable Costs. Analyze if fixed costs surged (server infrastructure, warehouse leases) OR variable costs increased (logistics shipping rates, payment gateway interchange fees, customer acquisition costs/ad spend). Formulate hypotheses and request targeted data for each branch.\n\n*Difficulty:* `Medium` | *Verified Source:* [Deloitte Consulting Case Interview Methodology](https://www.deloitte.com/global/en/careers/students.html)\n\n---\n\n### 3. [REPORTED] Deloitte \u2014 Cloud Security & IAM\n**Question:** What is the principle of least privilege in cloud IAM, and how do attackers exploit IAM misconfigurations to escalate privileges?\n\n**Model Answer:**\nPrinciple of Least Privilege (PoLP): Entities (users, roles, services) are granted only the minimum permissions required to perform their authorized tasks for the shortest duration necessary. Privilege escalation vulnerabilities occur when policies contain wildcard actions (Action: '*') or dangerous permissions such as: 1) iam:CreatePolicyVersion (allowing user to create new admin policy version and set it default), 2) iam:AttachUserPolicy / iam:AttachRolePolicy (attaching AdministratorAccess), 3) iam:PassRole with ec2:RunInstances (attaching a high-privileged role to a new VM they control). Mitigations include IAM Access Analyzer, SCPs (Service Control Policies), and permission boundaries.\n\n*Difficulty:* `Hard` | *Verified Source:* [Deloitte Cloud Security Review Practices](https://aws.amazon.com/iam/)"
+  },
+  {
+    "num": 2,
+    "question": "What is the difference between SOC 2 Type I and Type II audits in Deloitte consulting?",
+    "intent": "interview_preparation",
+    "status": "answered",
+    "generation_mode": "deterministic_fallback",
+    "sources": [
+      {
+        "id": "DELO-AUD-002",
+        "title": "Deloitte - SOC Operations & Auditing",
+        "company": "Deloitte",
+        "domain": "Cybersecurity",
+        "topic": "SOC Operations & Auditing",
+        "difficulty": "medium",
+        "provenance": "reported",
+        "source_title": "Deloitte IT Audit & Assurance Framework",
+        "source_url": "https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2",
+        "pdf_document": "deloitte_interview_guide.pdf"
+      },
+      {
+        "id": "DELO-CONS-004",
+        "title": "Deloitte - Structured Problem Solving",
+        "company": "Deloitte",
+        "domain": "Consulting & Analytics",
+        "topic": "Structured Problem Solving",
+        "difficulty": "medium",
+        "provenance": "reported",
+        "source_title": "Deloitte Consulting Case Interview Methodology",
+        "source_url": "https://www.deloitte.com/global/en/careers/students.html",
+        "pdf_document": "deloitte_interview_guide.pdf"
+      },
+      {
+        "id": "DELO-CLD-003",
+        "title": "Deloitte - Cloud Security & IAM",
+        "company": "Deloitte",
+        "domain": "Cybersecurity",
+        "topic": "Cloud Security & IAM",
+        "difficulty": "hard",
+        "provenance": "reported",
+        "source_title": "Deloitte Cloud Security Review Practices",
+        "source_url": "https://aws.amazon.com/iam/",
+        "pdf_document": "deloitte_interview_guide.pdf"
+      }
+    ],
+    "answer": "### 1. [REPORTED] Deloitte \u2014 SOC Operations & Auditing\n**Question:** What is the difference between a SOC 2 Type I and Type II report, and what is Segregation of Duties (SoD)?\n\n**Model Answer:**\nSOC 2 Type I evaluates whether an organization's security controls are suitably designed at a specific point in time. SOC 2 Type II tests the operational effectiveness of those controls over a specified period (typically 6 to 12 months) through auditor sample testing. Segregation of Duties (SoD) is an internal control principle ensuring that no single individual has end-to-end control over a sensitive transaction (e.g. software developers cannot have production database deployment privileges, or purchase request creators cannot approve invoices) to reduce fraud and unverified modifications.\n\n*Difficulty:* `Medium` | *Verified Source:* [Deloitte IT Audit & Assurance Framework](https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2)\n\n---\n\n### 2. [REPORTED] Deloitte \u2014 Structured Problem Solving\n**Question:** What is the MECE framework in management consulting, and how would you apply it to diagnose a client dropping e-commerce profit margins?\n\n**Model Answer:**\nMECE stands for Mutually Exclusive, Collectively Exhaustive: a problem-structuring framework where problem branches do not overlap (mutually exclusive) and cover all possible causes without gaps (collectively exhaustive). Application to dropping profit margins: Profit = Revenue - Total Costs. 1) Revenue Branch: Revenue = Quantity Sold x Average Price. Check if units sold dropped (lost market share, site downtime, product quality issues) OR if average realized price dropped (excessive discounting, shift to lower-margin product mix). 2) Cost Branch: Total Costs = Fixed Costs + Variable Costs. Analyze if fixed costs surged (server infrastructure, warehouse leases) OR variable costs increased (logistics shipping rates, payment gateway interchange fees, customer acquisition costs/ad spend). Formulate hypotheses and request targeted data for each branch.\n\n*Difficulty:* `Medium` | *Verified Source:* [Deloitte Consulting Case Interview Methodology](https://www.deloitte.com/global/en/careers/students.html)\n\n---\n\n### 3. [REPORTED] Deloitte \u2014 Cloud Security & IAM\n**Question:** What is the principle of least privilege in cloud IAM, and how do attackers exploit IAM misconfigurations to escalate privileges?\n\n**Model Answer:**\nPrinciple of Least Privilege (PoLP): Entities (users, roles, services) are granted only the minimum permissions required to perform their authorized tasks for the shortest duration necessary. Privilege escalation vulnerabilities occur when policies contain wildcard actions (Action: '*') or dangerous permissions such as: 1) iam:CreatePolicyVersion (allowing user to create new admin policy version and set it default), 2) iam:AttachUserPolicy / iam:AttachRolePolicy (attaching AdministratorAccess), 3) iam:PassRole with ec2:RunInstances (attaching a high-privileged role to a new VM they control). Mitigations include IAM Access Analyzer, SCPs (Service Control Policies), and permission boundaries.\n\n*Difficulty:* `Hard` | *Verified Source:* [Deloitte Cloud Security Review Practices](https://aws.amazon.com/iam/)"
+  },
+  {
+    "num": 3,
+    "question": "How does the NIST Cybersecurity Framework 2.0 structure its core functions?",
+    "intent": "interview_preparation",
+    "status": "answered",
+    "generation_mode": "deterministic_fallback",
+    "sources": [
+      {
+        "id": "DELO-SEC-001",
+        "title": "Deloitte - Governance & Compliance",
+        "company": "Deloitte",
+        "domain": "Cybersecurity",
+        "topic": "Governance & Compliance",
+        "difficulty": "medium",
+        "provenance": "reported",
+        "source_title": "Deloitte Advisory Risk & Financial Cyber Consulting Discussions",
+        "source_url": "https://www.nist.gov/cyberframework",
+        "pdf_document": "deloitte_interview_guide.pdf"
+      },
+      {
+        "id": "SEC-SOC-002",
+        "title": "Cybersecurity - SOC Operations & SIEM",
+        "company": null,
+        "domain": "Cybersecurity",
+        "topic": "SOC Operations & SIEM",
+        "difficulty": "medium",
+        "provenance": "official",
+        "source_title": "NIST SP 800-61 Computer Security Incident Handling Guide",
+        "source_url": "https://csrc.nist.gov/pubs/sp/800/61/r2/final",
+        "pdf_document": "soc_siem_ir_guide.pdf"
+      },
+      {
+        "id": "JPMC-CRYPTO-004",
+        "title": "JPMorgan Chase - Public Key Infrastructure (PKI)",
+        "company": "JPMorgan Chase",
+        "domain": "Cybersecurity",
+        "topic": "Public Key Infrastructure (PKI)",
+        "difficulty": "hard",
+        "provenance": "reported",
+        "source_title": "Financial Technology Mobile Security Standards",
+        "source_url": "https://careers.jpmorgan.com/global/en/home",
+        "pdf_document": "jpmorgan_interview_guide.pdf"
+      }
+    ],
+    "answer": "### 1. [REPORTED] Deloitte \u2014 Governance & Compliance\n**Question:** What are the core functions of the NIST Cybersecurity Framework (CSF 2.0), and how do you conduct an initial risk assessment for a client?\n\n**Model Answer:**\nNIST CSF 2.0 defines six core functions: Govern (GO), Identify (ID), Protect (PR), Detect (DE), Respond (RS), and Recover (RC). For an initial client risk assessment: 1) Asset Identification: Catalog hardware, software, sensitive data, and network boundaries. 2) Threat & Vulnerability Analysis: Identify potential threat actors and common vulnerabilities (CVEs, misconfigurations). 3) Likelihood and Impact Scoring: Qualitative/quantitative assessment to determine risk level (Risk = Likelihood x Impact). 4) Gap Analysis: Compare current controls against baseline security controls (NIST 800-53 / ISO 27001). 5) Remediation Roadmap: Prioritize actions based on business risk appetite.\n\n*Difficulty:* `Medium` | *Verified Source:* [Deloitte Advisory Risk & Financial Cyber Consulting Discussions](https://www.nist.gov/cyberframework)\n\n---\n\n### 2. [OFFICIAL] Cybersecurity \u2014 SOC Operations & SIEM\n**Question:** Walk through the NIST Incident Response lifecycle and explain how a SIEM correlates events to identify a brute force attack.\n\n**Model Answer:**\nNIST SP 800-61 Rev 2 outlines 4 stages: 1) Preparation (tools, logging policies, incident playbooks), 2) Detection & Analysis (SIEM alerting, triage, IOC verification), 3) Containment, Eradication & Recovery (isolating compromised host, removing malware, rotating credentials), 4) Post-Incident Activity (lessons learned, updating signatures). SIEM brute force correlation rule: Identifies multiple failed authentication events (e.g., Windows Event ID 4625) exceeding a threshold (e.g., >10 failures in 60 seconds from the same source IP/account) followed by a single successful logon (Event ID 4624), triggering a high-priority alert for automated quarantine.\n\n*Difficulty:* `Medium` | *Verified Source:* [NIST SP 800-61 Computer Security Incident Handling Guide](https://csrc.nist.gov/pubs/sp/800/61/r2/final)\n\n---\n\n### 3. [REPORTED] JPMorgan Chase \u2014 Public Key Infrastructure (PKI)\n**Question:** How does TLS 1.3 mutual authentication (mTLS) work, and why do mobile banking applications implement SSL pinning?\n\n**Model Answer:**\nIn mTLS, both server and client present and verify X.509 certificates: 1) Client initiates ClientHello with supported ciphers and key share. 2) Server returns ServerHello with certificate and CertificateRequest. 3) Server validates client key share and issues finished handshake. 4) Client sends its own certificate and CertificateVerify signature. SSL/Certificate Pinning embeds the server's public key or certificate hash directly in the mobile client. This prevents Man-in-the-Middle (MitM) attacks even if a user's device has a rogue Certificate Authority installed in its trusted root store (e.g. corporate proxy or rooted phone inspection).\n\n*Difficulty:* `Hard` | *Verified Source:* [Financial Technology Mobile Security Standards](https://careers.jpmorgan.com/global/en/home)"
+  },
+  {
+    "num": 4,
+    "question": "Why is SHA-256 not recommended for storing passwords, and what should be used instead?",
+    "intent": "interview_preparation",
+    "status": "answered",
+    "generation_mode": "deterministic_fallback",
+    "sources": [
+      {
+        "id": "SEC-CRYPTO-004",
+        "title": "Cryptography - Encryption & Hashing",
+        "company": null,
+        "domain": "Cryptography",
+        "topic": "Encryption & Hashing",
+        "difficulty": "medium",
+        "provenance": "official",
+        "source_title": "OWASP Password Storage Cheat Sheet",
+        "source_url": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
+        "pdf_document": "cybersecurity_guide.pdf"
+      },
+      {
+        "id": "NET-TCP-001",
+        "title": "Networking - Transport Layer",
+        "company": null,
+        "domain": "Networking",
+        "topic": "Transport Layer",
+        "difficulty": "medium",
+        "provenance": "official",
+        "source_title": "RFC 4987 TCP SYN Flooding Attacks and Common Mitigations",
+        "source_url": "https://datatracker.ietf.org/doc/html/rfc4987",
+        "pdf_document": "networking_guide.pdf"
+      },
+      {
+        "id": "ACCN-AI-002",
+        "title": "Accenture - Machine Learning Engineering",
+        "company": "Accenture",
+        "domain": "AI & Data Science",
+        "topic": "Machine Learning Engineering",
+        "difficulty": "medium",
+        "provenance": "reported",
+        "source_title": "Accenture AI Case Studies & Analytics Hiring",
+        "source_url": "https://www.accenture.com/in-en/insights/artificial-intelligence-summary-index",
+        "pdf_document": "accenture_interview_guide.pdf"
+      }
+    ],
+    "answer": "### 1. [OFFICIAL] Cryptography \u2014 Encryption & Hashing\n**Question:** Why is SHA-256 unsuitable for storing user passwords, and what key-derivation algorithms should be used instead?\n\n**Model Answer:**\nSHA-256 is a general-purpose cryptographic hash function designed to be fast and compute-efficient for message integrity. Because it is fast, attackers using modern GPUs and ASICs can compute billions of SHA-256 hashes per second, making offline brute-force and dictionary attacks trivially fast. For passwords, slow, adaptive, memory-hard Key Derivation Functions (KDFs) must be used: Argon2 (winner of the Password Hashing Competition, resistant to GPU/ASIC attacks), bcrypt (Blowfish-based with configurable work factor), or scrypt (memory-hard). These incorporate unique cryptographic salts and tunable work factors to make offline parallel cracking prohibitively expensive.\n\n*Difficulty:* `Medium` | *Verified Source:* [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)\n\n---\n\n### 2. [OFFICIAL] Networking \u2014 Transport Layer\n**Question:** Detail the TCP 3-way handshake, SYN flood vulnerability, and how SYN cookies mitigate it.\n\n**Model Answer:**\nTCP 3-Way Handshake: 1) Client sends SYN (seq=x). 2) Server responds with SYN-ACK (seq=y, ack=x+1) and allocates a Transmission Control Block (TCB) in memory (half-open connection). 3) Client sends ACK (ack=y+1). SYN Flood Attack: Attacker floods server with spoofed SYN packets without responding with ACK, exhausting the server's SYN backlog queue and denying legitimate traffic. SYN Cookies Mitigation: Server does NOT allocate memory for the TCB upon receiving SYN. Instead, it encodes cryptographic connection state into the initial Sequence Number (y) based on client IP, port, timestamp, and server secret. When legitimate client returns ACK, server reconstructs state from ack number and opens connection.\n\n*Difficulty:* `Medium` | *Verified Source:* [RFC 4987 TCP SYN Flooding Attacks and Common Mitigations](https://datatracker.ietf.org/doc/html/rfc4987)\n\n---\n\n### 3. [REPORTED] Accenture \u2014 Machine Learning Engineering\n**Question:** Why is accuracy a misleading metric for highly imbalanced fraud detection datasets, and what metrics should be used instead?\n\n**Model Answer:**\nIn fraud detection where fraudulent transactions make up only 0.1% (1 in 1000) of records, a naive classifier that predicts 'Legitimate' for every transaction achieves 99.9% accuracy while detecting zero fraud. Misleading metrics hide failure. Appropriate metrics: 1) Precision: Of all predicted frauds, how many were actual fraud? (Avoids false alarms). 2) Recall (Sensitivity): Of all actual frauds, how many did the model detect? (Critical to catch financial loss). 3) F1-Score / F-beta: Harmonic mean balancing precision and recall. 4) Precision-Recall AUC (PR-AUC): Superior to ROC-AUC for severe class imbalance because it does not include true negatives in its denominator.\n\n*Difficulty:* `Medium` | *Verified Source:* [Accenture AI Case Studies & Analytics Hiring](https://www.accenture.com/in-en/insights/artificial-intelligence-summary-index)"
+  },
+  {
+    "num": 5,
+    "question": "How does the TCP 3-way handshake work and what vulnerability does it have?",
+    "intent": "interview_preparation",
+    "status": "answered",
+    "generation_mode": "deterministic_fallback",
+    "sources": [
+      {
+        "id": "NET-TCP-001",
+        "title": "Networking - Transport Layer",
+        "company": null,
+        "domain": "Networking",
+        "topic": "Transport Layer",
+        "difficulty": "medium",
+        "provenance": "official",
+        "source_title": "RFC 4987 TCP SYN Flooding Attacks and Common Mitigations",
+        "source_url": "https://datatracker.ietf.org/doc/html/rfc4987",
+        "pdf_document": "networking_guide.pdf"
+      },
+      {
+        "id": "GOOG-NET-002",
+        "title": "Google - Protocols & Web Performance",
+        "company": "Google",
+        "domain": "Networking",
+        "topic": "Protocols & Web Performance",
+        "difficulty": "hard",
+        "provenance": "reported",
+        "source_title": "Google Research on QUIC and Web Transport",
+        "source_url": "https://www.chromium.org/quic/",
+        "pdf_document": "google_interview_guide.pdf"
+      },
+      {
+        "id": "JPMC-CRYPTO-004",
+        "title": "JPMorgan Chase - Public Key Infrastructure (PKI)",
+        "company": "JPMorgan Chase",
+        "domain": "Cybersecurity",
+        "topic": "Public Key Infrastructure (PKI)",
+        "difficulty": "hard",
+        "provenance": "reported",
+        "source_title": "Financial Technology Mobile Security Standards",
+        "source_url": "https://careers.jpmorgan.com/global/en/home",
+        "pdf_document": "jpmorgan_interview_guide.pdf"
+      }
+    ],
+    "answer": "### 1. [OFFICIAL] Networking \u2014 Transport Layer\n**Question:** Detail the TCP 3-way handshake, SYN flood vulnerability, and how SYN cookies mitigate it.\n\n**Model Answer:**\nTCP 3-Way Handshake: 1) Client sends SYN (seq=x). 2) Server responds with SYN-ACK (seq=y, ack=x+1) and allocates a Transmission Control Block (TCB) in memory (half-open connection). 3) Client sends ACK (ack=y+1). SYN Flood Attack: Attacker floods server with spoofed SYN packets without responding with ACK, exhausting the server's SYN backlog queue and denying legitimate traffic. SYN Cookies Mitigation: Server does NOT allocate memory for the TCB upon receiving SYN. Instead, it encodes cryptographic connection state into the initial Sequence Number (y) based on client IP, port, timestamp, and server secret. When legitimate client returns ACK, server reconstructs state from ack number and opens connection.\n\n*Difficulty:* `Medium` | *Verified Source:* [RFC 4987 TCP SYN Flooding Attacks and Common Mitigations](https://datatracker.ietf.org/doc/html/rfc4987)\n\n---\n\n### 2. [REPORTED] Google \u2014 Protocols & Web Performance\n**Question:** What architectural limitations of TCP/TLS led to the creation of QUIC and HTTP/3, and how does QUIC eliminate Head-of-Line (HoL) blocking?\n\n**Model Answer:**\nTCP limitations: 1) Head-of-Line (HoL) blocking at the transport layer: If one TCP packet is dropped, all streams sharing that TCP connection are stalled until retransmission succeeds, even if data for other HTTP streams has already arrived. 2) Latency overhead: TCP 3-way handshake + TLS 1.3 handshake requires multiple round trips (1-RTT or 2-RTT) before data transfer begins. 3) Connection migration: IP/port changes break TCP connections. QUIC solution: Runs over UDP. Streams are independent within QUIC; a dropped packet stalls only the affected stream, eliminating transport-level HoL blocking. Handshake and TLS encryption are integrated (0-RTT resumption), and Connection IDs allow seamless connection migration.\n\n*Difficulty:* `Hard` | *Verified Source:* [Google Research on QUIC and Web Transport](https://www.chromium.org/quic/)\n\n---\n\n### 3. [REPORTED] JPMorgan Chase \u2014 Public Key Infrastructure (PKI)\n**Question:** How does TLS 1.3 mutual authentication (mTLS) work, and why do mobile banking applications implement SSL pinning?\n\n**Model Answer:**\nIn mTLS, both server and client present and verify X.509 certificates: 1) Client initiates ClientHello with supported ciphers and key share. 2) Server returns ServerHello with certificate and CertificateRequest. 3) Server validates client key share and issues finished handshake. 4) Client sends its own certificate and CertificateVerify signature. SSL/Certificate Pinning embeds the server's public key or certificate hash directly in the mobile client. This prevents Man-in-the-Middle (MitM) attacks even if a user's device has a rogue Certificate Authority installed in its trusted root store (e.g. corporate proxy or rooted phone inspection).\n\n*Difficulty:* `Hard` | *Verified Source:* [Financial Technology Mobile Security Standards](https://careers.jpmorgan.com/global/en/home)"
+  },
+  {
+    "num": 6,
+    "question": "Explain the difference between 3NF and BCNF with an example.",
+    "intent": "interview_preparation",
+    "status": "answered",
+    "generation_mode": "deterministic_fallback",
+    "sources": [
+      {
+        "id": "DBMS-NORM-002",
+        "title": "DBMS - Schema Design",
+        "company": null,
+        "domain": "DBMS",
+        "topic": "Schema Design",
+        "difficulty": "hard",
+        "provenance": "practice",
+        "source_title": "Relational Database Theory",
+        "source_url": "https://en.wikipedia.org/wiki/Boyce%E2%80%93Codd_normal_form",
+        "pdf_document": "dbms_sql_guide.pdf"
+      },
+      {
+        "id": "AIML-FND-001",
+        "title": "AI & Data Science - Supervised Learning",
+        "company": null,
+        "domain": "AI & Data Science",
+        "topic": "Supervised Learning",
+        "difficulty": "medium",
+        "provenance": "practice",
+        "source_title": "Pattern Recognition and Machine Learning (Bishop)",
+        "source_url": "https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/",
+        "pdf_document": "ai_machine_learning_guide.pdf"
+      },
+      {
+        "id": "AIML-LLM-002",
+        "title": "AI & Data Science - Transformers & LLMs",
+        "company": null,
+        "domain": "AI & Data Science",
+        "topic": "Transformers & LLMs",
+        "difficulty": "hard",
+        "provenance": "official",
+        "source_title": "Attention Is All You Need & OWASP Top 10 for LLM Applications",
+        "source_url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        "pdf_document": "ai_machine_learning_guide.pdf"
+      }
+    ],
+    "answer": "### 1. [PRACTICE] DBMS \u2014 Schema Design\n**Question:** Explain the difference between Third Normal Form (3NF) and Boyce-Codd Normal Form (BCNF) with an example.\n\n**Model Answer:**\nA table is in 3NF if for every non-trivial functional dependency X -> Y, either X is a superkey OR Y is a prime attribute (part of a candidate key). BCNF is stricter: for every non-trivial functional dependency X -> Y, X MUST be a superkey (no exception for prime attributes). Example: Consider relation Enrollment(StudentID, Subject, Advisor). Assume: 1) For each student and subject, there is one advisor: (StudentID, Subject) -> Advisor. 2) Each advisor teaches only one subject: Advisor -> Subject. Candidate keys are (StudentID, Subject) and (StudentID, Advisor). Dependency Advisor -> Subject is in 3NF because Subject is a prime attribute, but NOT in BCNF because Advisor is not a superkey. Solution: Decompose into (Advisor, Subject) and (StudentID, Advisor).\n\n*Difficulty:* `Hard` | *Verified Source:* [Relational Database Theory](https://en.wikipedia.org/wiki/Boyce%E2%80%93Codd_normal_form)\n\n---\n\n### 2. [PRACTICE] AI & Data Science \u2014 Supervised Learning\n**Question:** What is the Bias-Variance tradeoff, and how do L1 (Lasso) and L2 (Ridge) regularization mathematically prevent overfitting?\n\n**Model Answer:**\nBias is error introduced by approximating a real-world problem with an overly simplistic model (underfitting). Variance is error from extreme sensitivity to training set fluctuations (overfitting). Expected error = Bias^2 + Variance + Irreducible Error. Regularization adds a penalty term to the loss function to constrain model complexity. L1 Regularization (Lasso) adds lambda * sum(|w_i|). Because its constraint region is diamond-shaped, it drives redundant weights exactly to zero, producing sparse models and feature selection. L2 Regularization (Ridge) adds lambda * sum(w_i^2). Its spherical constraint shrinks all weights proportionally towards zero without making them exactly zero, preventing dominant features.\n\n*Difficulty:* `Medium` | *Verified Source:* [Pattern Recognition and Machine Learning (Bishop)](https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/)\n\n---\n\n### 3. [OFFICIAL] AI & Data Science \u2014 Transformers & LLMs\n**Question:** How does the Self-Attention mechanism in Transformers compute attention weights, and what is Prompt Injection in LLM applications?\n\n**Model Answer:**\nSelf-Attention: For an input sequence, each token embedding is multiplied by weight matrices to produce Query (Q), Key (K), and Value (V) vectors. Attention scores are computed using Scaled Dot-Product Attention: Attention(Q, K, V) = softmax((Q * K^T) / sqrt(d_k)) * V. Scaling by sqrt(d_k) prevents extremely small softmax gradients for large dimensions. Prompt Injection: A security vulnerability where malicious user input manipulates the LLM's system instructions, causing the model to bypass safety guardrails, leak internal context, or execute unauthorized tool calls. Mitigations include structured separation of system instructions vs untrusted user text, delimiter protection, output validation, and server-side RBAC enforcement.\n\n*Difficulty:* `Hard` | *Verified Source:* [Attention Is All You Need & OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)"
+  },
+  {
+    "num": 7,
+    "question": "What are the eligibility criteria and registration requirements for NFSU campus placements?",
+    "intent": "interview_preparation",
+    "status": "answered",
+    "generation_mode": "deterministic_fallback",
+    "sources": [
+      {
+        "id": "NFSU-PROC-001",
+        "title": "General Placement Info - NFSU Placement Procedures",
+        "company": null,
+        "domain": "General Placement Info",
+        "topic": "NFSU Placement Procedures",
+        "difficulty": "easy",
+        "provenance": "official",
+        "source_title": "NFSU Placement Guidelines & Career Development Cell Rules",
+        "source_url": "https://www.nfsu.ac.in/placements",
+        "pdf_document": "hr_behavioral_guide.pdf"
+      },
+      {
+        "id": "NFSU-STAGE-002",
+        "title": "General Placement Info - Placement Drive Stages",
+        "company": null,
+        "domain": "General Placement Info",
+        "topic": "Placement Drive Stages",
+        "difficulty": "easy",
+        "provenance": "official",
+        "source_title": "NFSU Campus Recruitment Manual",
+        "source_url": "https://www.nfsu.ac.in/placements",
+        "pdf_document": "hr_behavioral_guide.pdf"
+      },
+      {
+        "id": "HR-INTRO-001",
+        "title": "HR & Behavioral - Self Introduction & Communication",
+        "company": null,
+        "domain": "HR & Behavioral",
+        "topic": "Self Introduction & Communication",
+        "difficulty": "easy",
+        "provenance": "practice",
+        "source_title": "NFSU Placement Orientation Handbook",
+        "source_url": "https://www.nfsu.ac.in/placements",
+        "pdf_document": "hr_behavioral_guide.pdf"
+      }
+    ],
+    "answer": "### 1. [OFFICIAL] General Placement Info \u2014 NFSU Placement Procedures\n**Question:** What are the standard eligibility criteria and registration requirements for NFSU campus placement drives?\n\n**Model Answer:**\nNFSU Campus Placement Guidelines: 1) Registration: All final-year students (B.Tech, M.Tech Cyber Security, M.Sc DFIS, Cyber Forensics, etc.) must register with the Career Development Centre (CDC) portal with verified academic transcripts. 2) Minimum CGPA: Standard eligibility requires a minimum cumulative CGPA (typically 6.5 or 7.0 depending on company cutoff criteria) with no active backlogs at the time of drive application. 3) Attendance & Conduct: Minimum 75% academic attendance and zero pending disciplinary proceedings. 4) One Student One Job Policy: Once a student receives an offer of Category-A (Regular), they are eligible only for Dream / Super Dream packages exceeding defined CTC multipliers. 5) Mandate: Formally accepted offer letters require commitment; unexcused absence from registered interviews attracts placement portal suspension.\n\n*Difficulty:* `Easy` | *Verified Source:* [NFSU Placement Guidelines & Career Development Cell Rules](https://www.nfsu.ac.in/placements)\n\n---\n\n### 2. [OFFICIAL] General Placement Info \u2014 Placement Drive Stages\n**Question:** What are the sequential stages of an on-campus recruiter placement drive at NFSU?\n\n**Model Answer:**\nTypical NFSU Recruiter Drive Stages: 1) Job Notification Form (JNF) Release: Placement cell posts company profile, job description, CTC, eligibility criteria, and drive timeline. 2) Student Application: Eligible registered students submit interest via CDC portal. 3) Pre-Placement Talk (PPT): Company presentation describing corporate culture, project domains, and interview expectations (attendance mandatory). 4) Online Assessment / Screening Test: Aptitude, domain technical MCQs (Cyber/CS/DSA), and coding or hands-on CTF challenge. 5) Technical Interview Round(s): In-depth examination of fundamentals, past academic projects, system architecture, and domain knowledge. 6) HR / Leadership Round: Cultural fit, behavioral scenarios, communication, and expectation alignment. 7) Results & Offer Letter Issuance: CDC formally announces selected candidates and processes acceptance verification.\n\n*Difficulty:* `Easy` | *Verified Source:* [NFSU Campus Recruitment Manual](https://www.nfsu.ac.in/placements)\n\n---\n\n### 3. [PRACTICE] HR & Behavioral \u2014 Self Introduction & Communication\n**Question:** How should an NFSU cybersecurity or computer science student structure their 'Tell me about yourself' answer?\n\n**Model Answer:**\nStructure into 4 cohesive components (approx. 90-120 seconds): 1) Present: State current degree program at National Forensic Sciences University, key specialization (e.g., M.Tech Cyber Security, B.Tech CSE, DFIS), and core technical identity. 2) Past: Highlight foundational achievements, relevant coursework (Systems, Cryptography, DSA), and practical hands-on experience (labs, CTFs, hackathons). 3) Future: Mention tangible project experience (e.g., automated threat detection, secure portal development) and connect skills directly to the role and company culture. 4) Hook: Conclude with why this specific recruiter aligns with your career trajectory.\n\n*Difficulty:* `Easy` | *Verified Source:* [NFSU Placement Orientation Handbook](https://www.nfsu.ac.in/placements)"
+  },
+  {
+    "num": 8,
+    "question": "What are the sequential stages of a placement drive at NFSU?",
+    "intent": "interview_preparation",
+    "status": "answered",
+    "generation_mode": "deterministic_fallback",
+    "sources": [
+      {
+        "id": "NFSU-STAGE-002",
+        "title": "General Placement Info - Placement Drive Stages",
+        "company": null,
+        "domain": "General Placement Info",
+        "topic": "Placement Drive Stages",
+        "difficulty": "easy",
+        "provenance": "official",
+        "source_title": "NFSU Campus Recruitment Manual",
+        "source_url": "https://www.nfsu.ac.in/placements",
+        "pdf_document": "hr_behavioral_guide.pdf"
+      },
+      {
+        "id": "NFSU-PROC-001",
+        "title": "General Placement Info - NFSU Placement Procedures",
+        "company": null,
+        "domain": "General Placement Info",
+        "topic": "NFSU Placement Procedures",
+        "difficulty": "easy",
+        "provenance": "official",
+        "source_title": "NFSU Placement Guidelines & Career Development Cell Rules",
+        "source_url": "https://www.nfsu.ac.in/placements",
+        "pdf_document": "hr_behavioral_guide.pdf"
+      },
+      {
+        "id": "VAPT-BURP-001",
+        "title": "Cybersecurity - Penetration Testing Tools",
+        "company": null,
+        "domain": "Cybersecurity",
+        "topic": "Penetration Testing Tools",
+        "difficulty": "medium",
+        "provenance": "official",
+        "source_title": "OWASP Web Security Testing Guide (WSTG v4.2)",
+        "source_url": "https://owasp.org/www-project-web-security-testing-guide/",
+        "pdf_document": "cybersecurity_guide.pdf"
+      }
+    ],
+    "answer": "### 1. [OFFICIAL] General Placement Info \u2014 Placement Drive Stages\n**Question:** What are the sequential stages of an on-campus recruiter placement drive at NFSU?\n\n**Model Answer:**\nTypical NFSU Recruiter Drive Stages: 1) Job Notification Form (JNF) Release: Placement cell posts company profile, job description, CTC, eligibility criteria, and drive timeline. 2) Student Application: Eligible registered students submit interest via CDC portal. 3) Pre-Placement Talk (PPT): Company presentation describing corporate culture, project domains, and interview expectations (attendance mandatory). 4) Online Assessment / Screening Test: Aptitude, domain technical MCQs (Cyber/CS/DSA), and coding or hands-on CTF challenge. 5) Technical Interview Round(s): In-depth examination of fundamentals, past academic projects, system architecture, and domain knowledge. 6) HR / Leadership Round: Cultural fit, behavioral scenarios, communication, and expectation alignment. 7) Results & Offer Letter Issuance: CDC formally announces selected candidates and processes acceptance verification.\n\n*Difficulty:* `Easy` | *Verified Source:* [NFSU Campus Recruitment Manual](https://www.nfsu.ac.in/placements)\n\n---\n\n### 2. [OFFICIAL] General Placement Info \u2014 NFSU Placement Procedures\n**Question:** What are the standard eligibility criteria and registration requirements for NFSU campus placement drives?\n\n**Model Answer:**\nNFSU Campus Placement Guidelines: 1) Registration: All final-year students (B.Tech, M.Tech Cyber Security, M.Sc DFIS, Cyber Forensics, etc.) must register with the Career Development Centre (CDC) portal with verified academic transcripts. 2) Minimum CGPA: Standard eligibility requires a minimum cumulative CGPA (typically 6.5 or 7.0 depending on company cutoff criteria) with no active backlogs at the time of drive application. 3) Attendance & Conduct: Minimum 75% academic attendance and zero pending disciplinary proceedings. 4) One Student One Job Policy: Once a student receives an offer of Category-A (Regular), they are eligible only for Dream / Super Dream packages exceeding defined CTC multipliers. 5) Mandate: Formally accepted offer letters require commitment; unexcused absence from registered interviews attracts placement portal suspension.\n\n*Difficulty:* `Easy` | *Verified Source:* [NFSU Placement Guidelines & Career Development Cell Rules](https://www.nfsu.ac.in/placements)\n\n---\n\n### 3. [OFFICIAL] Cybersecurity \u2014 Penetration Testing Tools\n**Question:** What are the main stages of an authorized web application penetration test using Burp Suite and OWASP WSTG?\n\n**Model Answer:**\nStages per OWASP Web Security Testing Guide (WSTG): 1) Scoping & Rules of Engagement: Define target boundaries, testing windows, contact escalation, and obtain written authorization. 2) Reconnaissance & Passive Information Gathering: Subdomain enumeration, technology stack fingerprinting (Wappalyzer), DNS analysis. 3) Active Mapping: Intercept traffic with Burp Suite Proxy, spider all endpoints, analyze sitemap and hidden parameters. 4) Vulnerability Assessment: Test for OWASP Top 10 using Burp Repeater and Intruder: Broken Object Level Authorization (BOLA/IDOR), authentication bypass, injection vectors, CSRF, SSRF. 5) Exploitation & Proof of Concept: Safely confirm exploitability without impacting business operations. 6) Reporting & Remediation Guidance: Classify severity (CVSS v3.1), provide reproducible steps and remediation advice.\n\n*Difficulty:* `Medium` | *Verified Source:* [OWASP Web Security Testing Guide (WSTG v4.2)](https://owasp.org/www-project-web-security-testing-guide/)"
+  },
+  {
+    "num": 9,
+    "question": "What is the average and highest placement package at NFSU, and which companies visit?",
+    "intent": "interview_preparation",
+    "status": "answered",
+    "generation_mode": "deterministic_fallback",
+    "sources": [
+      {
+        "id": "NFSU-PROC-001",
+        "title": "General Placement Info - NFSU Placement Procedures",
+        "company": null,
+        "domain": "General Placement Info",
+        "topic": "NFSU Placement Procedures",
+        "difficulty": "easy",
+        "provenance": "official",
+        "source_title": "NFSU Placement Guidelines & Career Development Cell Rules",
+        "source_url": "https://www.nfsu.ac.in/placements",
+        "pdf_document": "hr_behavioral_guide.pdf"
+      },
+      {
+        "id": "NFSU-STAGE-002",
+        "title": "General Placement Info - Placement Drive Stages",
+        "company": null,
+        "domain": "General Placement Info",
+        "topic": "Placement Drive Stages",
+        "difficulty": "easy",
+        "provenance": "official",
+        "source_title": "NFSU Campus Recruitment Manual",
+        "source_url": "https://www.nfsu.ac.in/placements",
+        "pdf_document": "hr_behavioral_guide.pdf"
+      },
+      {
+        "id": "AMZN-DSA-001",
+        "title": "Amazon - Graphs & BFS/DFS",
+        "company": "Amazon",
+        "domain": "DSA",
+        "topic": "Graphs & BFS/DFS",
+        "difficulty": "medium",
+        "provenance": "reported",
+        "source_title": "Amazon SDE Technical Interview Questions",
+        "source_url": "https://amazon.jobs/en/landing_pages/software-development-topics",
+        "pdf_document": "amazon_interview_guide.pdf"
+      }
+    ],
+    "answer": "### 1. [OFFICIAL] General Placement Info \u2014 NFSU Placement Procedures\n**Question:** What are the standard eligibility criteria and registration requirements for NFSU campus placement drives?\n\n**Model Answer:**\nNFSU Campus Placement Guidelines: 1) Registration: All final-year students (B.Tech, M.Tech Cyber Security, M.Sc DFIS, Cyber Forensics, etc.) must register with the Career Development Centre (CDC) portal with verified academic transcripts. 2) Minimum CGPA: Standard eligibility requires a minimum cumulative CGPA (typically 6.5 or 7.0 depending on company cutoff criteria) with no active backlogs at the time of drive application. 3) Attendance & Conduct: Minimum 75% academic attendance and zero pending disciplinary proceedings. 4) One Student One Job Policy: Once a student receives an offer of Category-A (Regular), they are eligible only for Dream / Super Dream packages exceeding defined CTC multipliers. 5) Mandate: Formally accepted offer letters require commitment; unexcused absence from registered interviews attracts placement portal suspension.\n\n*Difficulty:* `Easy` | *Verified Source:* [NFSU Placement Guidelines & Career Development Cell Rules](https://www.nfsu.ac.in/placements)\n\n---\n\n### 2. [OFFICIAL] General Placement Info \u2014 Placement Drive Stages\n**Question:** What are the sequential stages of an on-campus recruiter placement drive at NFSU?\n\n**Model Answer:**\nTypical NFSU Recruiter Drive Stages: 1) Job Notification Form (JNF) Release: Placement cell posts company profile, job description, CTC, eligibility criteria, and drive timeline. 2) Student Application: Eligible registered students submit interest via CDC portal. 3) Pre-Placement Talk (PPT): Company presentation describing corporate culture, project domains, and interview expectations (attendance mandatory). 4) Online Assessment / Screening Test: Aptitude, domain technical MCQs (Cyber/CS/DSA), and coding or hands-on CTF challenge. 5) Technical Interview Round(s): In-depth examination of fundamentals, past academic projects, system architecture, and domain knowledge. 6) HR / Leadership Round: Cultural fit, behavioral scenarios, communication, and expectation alignment. 7) Results & Offer Letter Issuance: CDC formally announces selected candidates and processes acceptance verification.\n\n*Difficulty:* `Easy` | *Verified Source:* [NFSU Campus Recruitment Manual](https://www.nfsu.ac.in/placements)\n\n---\n\n### 3. [REPORTED] Amazon \u2014 Graphs & BFS/DFS\n**Question:** How do you detect a cycle in a directed dependency graph (e.g. package management or course schedule) and output a valid build order?\n\n**Model Answer:**\nTo detect a cycle and produce a valid ordering: 1) Kahn's Algorithm (BFS): Compute in-degrees for all vertices. Push vertices with in-degree 0 into a queue. While queue is not empty, dequeue vertex u, append to topological order, and decrement in-degrees of neighbors. If a neighbor reaches in-degree 0, enqueue it. If processed count != total vertices, a cycle exists. 2) DFS with 3-color marking (WHITE=unvisited, GRAY=currently visiting in recursion stack, BLACK=fully processed). If an edge points to a GRAY node, a back-edge (cycle) is detected. Time complexity: O(V + E), Space complexity: O(V + E).\n\n*Difficulty:* `Medium` | *Verified Source:* [Amazon SDE Technical Interview Questions](https://amazon.jobs/en/landing_pages/software-development-topics)"
+  },
+  {
+    "num": 10,
+    "question": "Explain my placement eligibility and whether I can apply for Dream companies.",
+    "intent": "personal_placement_assistance",
+    "status": "answered",
+    "generation_mode": "policy_engine",
+    "sources": [
+      {
+        "id": "policy-engine-v1",
+        "title": "NFSU Authoritative Policy Engine",
+        "company": null,
+        "domain": null,
+        "provenance": "official",
+        "source_url": "https://www.nfsu.ac.in/placements"
+      }
+    ],
+    "answer": "\u26a0\ufe0f **Placement Eligibility: MANUAL REVIEW REQUIRED**\n\nStudent: **Radhika Nair** (NFSU/2024/CYBER/042)\n**Review Notes:**\n\u2022 Student already holds an offer of 12.5 LPA. Application for upgrade requires CDC committee approval (Manual Review).\n\nYour application requires approval from the CDC Placement Committee under institutional policy."
+  }
+]

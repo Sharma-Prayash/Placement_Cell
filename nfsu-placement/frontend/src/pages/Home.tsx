@@ -106,12 +106,6 @@ export default function Home() {
               <Link className="btn-ghost btn-lg" to="/recruit"><Icon name="handshake" />Recruit at NFSU</Link>
             </div>
           </div>
-          <div className="hero-card">
-            <h2>Placement rate by programme</h2>
-            <HBars title="Placement rate by programme" max={100}
-              rows={courses.map((c, i) => ({ label: short(c.course), value: c.placement_rate, display: c.placement_rate === null ? "—" : `${c.placement_rate}%`, color: SERIES[i % SERIES.length] }))} />
-            <p className="fine">A dash means fewer than {k} students, so the figure is not published.</p>
-          </div>
         </div>
       </section>
 

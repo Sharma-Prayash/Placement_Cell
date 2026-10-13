@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import Assistant from "./Assistant";
 import { homeFor, isStaff, useAuth } from "../lib/auth";
 import { Emblem, Icon } from "./icons";
 import { initials } from "./ui";
@@ -104,6 +105,7 @@ export default function Layout() {
           </div>
         </div>
       </footer>
+      <Assistant />
     </div>
   );
 }

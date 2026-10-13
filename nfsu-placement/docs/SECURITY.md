@@ -28,6 +28,7 @@ Each control in the problem statement maps to code and to at least one test in `
 | Exports | Staff only, reason required, row cap, watermark line, formula-injection escaping, audited | covered by the role permission tests |
 | Backups | `scripts/backup.sh` (AES-256, PBKDF2), `scripts/restore.sh` restore drill with row-count comparison | manual drill |
 | Dependencies | Pinned versions; `pip-audit` and `npm audit` in CI; secrets only in `.env` (gitignored) | `.github/workflows/ci.yml` |
+| Placement assistant (U.J.) | Read-only. Personal answers only on the signed-in endpoint, only for students, only about the session's own record, with verdicts from `evaluate_for()`; the public endpoint ignores sessions. Questions are never stored (usage counts only). 20 questions per 10 min per IP or user. Optional Gemini sees only interview-prep questions and approved question-bank text, never personal data, and its answers outside the bank are labelled AI-generated; key sent in a header; output stripped of markup and rendered as text; any failure falls back to the question bank | `tests/test_assistant.py` |
 | Retention | Archive instead of delete; consent flags; the retention schedule is a policy decision for the Placement Cell (see limitations) | — |
 
 ## Known limitations

@@ -15,11 +15,14 @@ function niceMax(v: number) {
 
 function DataTable({ caption, head, rows }: { caption: string; head: string[]; rows: (string | number | null)[][] }) {
   return (
-    <table className="sr-only">
-      <caption>{caption}</caption>
-      <thead><tr>{head.map((h) => <th key={h}>{h}</th>)}</tr></thead>
-      <tbody>{rows.map((r, i) => <tr key={i}>{r.map((c, j) => <td key={j}>{c ?? "not published"}</td>)}</tr>)}</tbody>
-    </table>
+    // Wrapped in a div: a table ignores the 1px width, so it would widen the page on phones.
+    <div className="sr-only">
+      <table>
+        <caption>{caption}</caption>
+        <thead><tr>{head.map((h) => <th key={h}>{h}</th>)}</tr></thead>
+        <tbody>{rows.map((r, i) => <tr key={i}>{r.map((c, j) => <td key={j}>{c ?? "not published"}</td>)}</tr>)}</tbody>
+      </table>
+    </div>
   );
 }
 

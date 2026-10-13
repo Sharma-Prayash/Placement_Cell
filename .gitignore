@@ -1,0 +1,36 @@
+# Secrets: never commit real keys. Commit .env.example instead.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local databases and uploaded files
+*.sqlite3
+*.sqlite3-journal
+db.sqlite3
+private_media/
+media/
+backups/
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / frontend builds
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Archives and editor/OS clutter
+*.zip
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

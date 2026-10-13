@@ -59,19 +59,7 @@ export function Icon({ name, label, className = "icon" }: { name: IconName; labe
   );
 }
 
-/** Placeholder NFSU monogram. Replace with the official emblem file when the Placement Cell supplies it. */
+/** Official NFSU emblem (public/images/nfsu-logo.png). Decorative here: the link around it carries the name. */
 export function Emblem({ className = "brand-emblem" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 64 64" aria-hidden="true">
-      <defs>
-        <linearGradient id="emb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#1d3a78" /><stop offset="1" stopColor="#0f2350" /></linearGradient>
-      </defs>
-      <circle cx="32" cy="32" r="31" fill="url(#emb)" />
-      <circle cx="32" cy="32" r="26.5" fill="none" stroke="#e0a526" strokeWidth="2" />
-      <circle cx="32" cy="32" r="23" fill="none" stroke="#e0a526" strokeWidth="0.75" strokeDasharray="2 2.4" />
-      <path d="M32 13.5 46 19v10.5c0 9.2-6 15.8-14 18.5-8-2.7-14-9.3-14-18.5V19l14-5.5Z" fill="none" stroke="#fff" strokeWidth="1.6" />
-      <text x="32" y="35.5" textAnchor="middle" fontFamily="Montserrat, sans-serif" fontWeight="800" fontSize="10.5" fill="#fff" letterSpacing="0.6">NFSU</text>
-      <path d="M24 40.5h16" stroke="#e0a526" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
+  return <img className={className} src="/images/nfsu-logo.png" alt="" width={280} height={369} />;
 }

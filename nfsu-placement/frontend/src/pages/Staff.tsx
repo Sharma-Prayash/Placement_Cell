@@ -60,6 +60,7 @@ export default function Staff() {
         {adminOrOfficer && <NavLink to="/staff/recruiters"><Icon name="building" />Recruiters</NavLink>}
         {adminOrOfficer && <NavLink to="/staff/bulletin"><Icon name="megaphone" />Bulletin queue</NavLink>}
         <NavLink to="/staff/flags"><Icon name="flag" />Policy flags</NavLink>
+        {adminOrOfficer && <NavLink to="/staff/assistant"><Icon name="sparkle" />Assistant</NavLink>}
         {adminOrOfficer && <NavLink to="/staff/audit"><Icon name="scroll" />Audit log</NavLink>}
         {isAdmin && <NavLink to="/staff/policy"><Icon name="sliders" />Policy settings</NavLink>}
       </nav>
@@ -74,6 +75,7 @@ export default function Staff() {
         <Route path="bulletin" element={<BulletinQueue />} />
         <Route path="flags" element={<Flags />} />
         <Route path="reports" element={<Reports />} />
+        <Route path="assistant" element={<AssistantUsage />} />
         <Route path="audit" element={<Audit />} />
         <Route path="policy" element={<PolicySettings />} />
       </Routes>
@@ -483,6 +485,50 @@ function Reports() {
           <tbody>{batches.map(([k, v]) => <tr key={k}><td>{k}</td><td className="num">{v.students}</td><td className="num">{v.placed}</td><td className="num">{rate(v.placed, v.students)}%</td></tr>)}</tbody></table></div></Section>
         <Section title="By company"><div className="table-wrap"><table><thead><tr><th>Company</th><th className="num">Offers</th><th className="num">Accepted</th><th>Categories</th><th className="num">Highest CTC</th></tr></thead>
           <tbody>{r.by_company.map((c: any) => <tr key={c.company}><td>{c.company}</td><td className="num">{c.offers}</td><td className="num">{c.accepted}</td><td><div className="row tight">{c.categories.length ? c.categories.map((x: string) => <Category key={x} value={x} />) : "—"}</div></td><td className="num">{lpa(c.highest_ctc_lpa)}</td></tr>)}</tbody></table></div></Section>
+      </div>
+    </div>
+  );
+}
+
+const INTENT_LABEL: Record<string, string> = { personal: "Personal (students)", placement: "Placement information", prep: "Interview prep", help: "Help" };
+const ROLE_LABEL: Record<string, string> = { public: "Public", student: "Students", recruiter: "Recruiters", admin: "Admin", officer: "Officers", coordinator: "Coordinators" };
+const PROV_LABEL: Record<string, string> = { official: "Official source", reported: "Reported experience", practice: "Practice question" };
+
+function AssistantUsage() {
+  const { data: u, err } = useLoad<any>("/staff/assistant", null);
+  if (!u) return <Errors lines={err} />;
+  const slices = (obj: Record<string, number>, labels: Record<string, string>) =>
+    Object.entries(obj).map(([k, v], i) => ({ label: labels[k] ?? k, value: v, color: SERIES[i % SERIES.length] }));
+  return (
+    <div className="stack">
+      <p className="muted small">U.J. answers from the student's own record, the policy engine, published statistics and the reviewed question bank.
+        Questions are never stored; only the counts below are kept.</p>
+      {!u.llm_enabled && <div className="notice notice-error"><p>Gemini is off: no API key is set, so interview-prep answers come straight from the question bank.</p></div>}
+      {u.llm_enabled && u.llm_last && !u.llm_last.ok && (
+        <Errors lines={[`Gemini (${u.llm_model}) is configured but its last call failed ${when(u.llm_last.at)}: ${u.llm_last.error}. Answers are falling back to the question bank. Check the key with manage.py check_gemini.`]} />)}
+      {u.llm_enabled && u.llm_last?.ok && <Done text={`Gemini (${u.llm_model}) is working. Last successful answer ${when(u.llm_last.at)}.`} />}
+      {u.llm_enabled && !u.llm_last && <p className="muted small">Gemini ({u.llm_model}) is configured and has not been called yet.</p>}
+      <dl className="kpis">
+        <Kpi icon="sparkle" label={`Questions, last ${u.window_days} days`} value={u.questions} tone={1} />
+        <Kpi icon="flag" label="Not covered by the question bank" value={u.unanswered} tone={5} />
+        <Kpi icon="layers" label="Approved question-bank entries" value={u.knowledge.by_status.approved ?? 0} tone={3} />
+        <Kpi icon="building" label="Companies covered" value={u.knowledge.companies.length} tone={2} />
+      </dl>
+      <div className="dash-grid">
+        <Card title="Questions by type" icon="pie" className="col-6">
+          {u.questions ? <Donut title="Questions by type" centerLabel="questions" slices={slices(u.by_intent, INTENT_LABEL)} /> : <Empty>No questions yet.</Empty>}
+        </Card>
+        <Card title="Who is asking" icon="users" className="col-6">
+          {u.questions ? <HBars title="Questions by role" rows={slices(u.by_role, ROLE_LABEL)} /> : <Empty>No questions yet.</Empty>}
+        </Card>
+        <Card title="Question bank by topic" icon="graduation" className="col-7">
+          <HBars title="Approved entries by topic" rows={Object.entries(u.knowledge.by_domain as Record<string, number>).sort((a, b) => b[1] - a[1])
+            .map(([k, v], i) => ({ label: k, value: v, color: SERIES[i % SERIES.length] }))} />
+        </Card>
+        <Card title="Where the material comes from" icon="scroll" className="col-5">
+          <Donut title="Approved entries by provenance" centerLabel="entries" slices={slices(u.knowledge.by_provenance, PROV_LABEL)} />
+          <p className="fine" style={{ marginTop: "0.75rem" }}>Companies: {u.knowledge.companies.join(", ") || "none yet"}. Load or update entries with <code>manage.py load_knowledge</code>; only approved entries are ever served.</p>
+        </Card>
       </div>
     </div>
   );

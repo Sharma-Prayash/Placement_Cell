@@ -4,6 +4,7 @@ Every secret comes from the environment (.env in development). Security-relevant
 defaults are strict; DEBUG only relaxes the HTTPS-only cookie flags.
 """
 import os
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     "apps.policy",
     "apps.bulletin",
     "apps.analytics",
+    "apps.assistant",
 ]
 
 MIDDLEWARE = [
@@ -157,6 +159,16 @@ LOGIN_LOCK_MINUTES = 15
 PUBLIC_STATS_MIN_CELL = int(env("PUBLIC_STATS_MIN_CELL", "5"))
 CHANGE_REQUEST_TTL_HOURS = 48
 EXPORT_ROW_CAP = 2000
+
+# U.J. placement assistant. Gemini is optional: with no key, answers come straight from the question bank.
+# The model only ever sees the question and approved question-bank entries, never personal records.
+GEMINI_API_KEY = env("GEMINI_API_KEY", "")
+GEMINI_MODEL = env("GEMINI_MODEL", "gemini-3.8-flash")
+ASSISTANT_LLM_ENABLED = env_bool("ASSISTANT_LLM_ENABLED", True)
+ASSISTANT_LLM_TIMEOUT = 25  # seconds; the answer falls back to the question bank after this
+ASSISTANT_RATE_LIMIT = (20, 600)  # questions per caller per 10 minutes
+if sys.argv[1:2] == ["test"]:
+    GEMINI_API_KEY = ""  # tests never call Google or spend quota; LLM tests set a fake key and mock the network
 
 LANGUAGE_CODE = "en-in"
 TIME_ZONE = "Asia/Kolkata"

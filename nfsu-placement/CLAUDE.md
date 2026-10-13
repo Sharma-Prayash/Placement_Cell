@@ -22,6 +22,7 @@ cd backend
 .venv/bin/python manage.py migrate
 .venv/bin/python manage.py seed_demo --reset                 # wipe and reseed local SQLite
 .venv/bin/python manage.py run_jobs                          # deadline expiry, drive closing, absentee flags
+.venv/bin/python manage.py load_knowledge                    # (re)load the assistant question bank; seed_demo runs it too
 .venv/bin/python manage.py verify_audit_chain
 .venv/bin/pip install <pkg>==<exact version> && .venv/bin/pip freeze | grep -i <pkg>   # then pin it in requirements.txt
 
@@ -50,6 +51,7 @@ backend/
   apps/policy          engine.py (PURE), services.py (model adapters), PolicyConfig, PolicyFlag
   apps/bulletin        Post (common bulletin), Attendance, join endpoint
   apps/analytics       internal_report() and public_report()
+  apps/assistant       U.J. placement assistant: service.py (routing), knowledge.py (question bank search), llm.py (optional Gemini)
   tests/               test_policy_engine.py (case table), test_security.py (attack tests), factories.py
 frontend/src/
   lib/api.ts           fetch wrapper; sends X-CSRFToken; never store tokens in JS
@@ -82,18 +84,26 @@ docs/                  ARCHITECTURE, POLICY, SECURITY, DEMO
 12. **Every new endpoint ships with a test**, including at least one negative test (wrong role, another user's object, tampered field). `./test.sh` must stay green.
 13. **Pin exact dependency versions** at least two weeks old. Never commit `.env`, `db.sqlite3`, `private_media/` or `.venv/`.
 
+## Placement assistant (U.J.)
+
+- It only reads. Never give it a write path (apply, accept, change a record); point users to their dashboard instead.
+- Personal answers come from `user.student` and `evaluate_for()` on `POST /api/assistant`, for students only. `POST /api/public/assistant` has no authentication classes, so it can never see a session.
+- Never send personal data, records or verdicts to the LLM. Only interview-prep answers use it: `llm.reword()` explains matching approved `KnowledgeEntry` text, and `llm.answer_open()` answers prep questions the bank does not cover, which the UI labels as AI-generated. Check a key with `manage.py check_gemini`; the staff Assistant tab shows the last Gemini error.
+- Do not store question text. `AssistantQuery` keeps counts only.
+- New question-bank material goes in JSON and is loaded with `manage.py load_knowledge`; only `status="approved"` entries are served. NFSU rules are never written into the bank: they come from `PolicyConfig`, `public_report()` and the bulletin, so they stay current.
+
 ## Frontend conventions
 
 - Use `api()` from `lib/api.ts` for every request. It handles CSRF and errors; show errors with `<Errors lines={errorLines(e)} />`.
 - Never use `dangerouslySetInnerHTML`. Bulletin bodies are sanitised server-side and still rendered as text.
 - Keep the design tokens in `styles.css` (NFSU navy, gold accent, cool paper, three verdict colours, chart series `--c1`…`--c5`). The three verdict colours mean policy outcomes only; never reuse them decoratively.
 - Charts come from `components/charts.tsx` (dependency-free SVG, each with an accessible name and a hidden data table) and icons from `components/icons.tsx`. Do not add a chart or icon library. Charts only display numbers the API already returned; a `null` (suppressed) figure is drawn as an empty slot, never estimated.
-- Campus photos in `public/images/` are CC BY 3.0 (Rushi Mehta, Wikimedia Commons); keep the credit in the footer. The emblem in `icons.tsx` is a placeholder for the official NFSU logo.
+- Campus photos in `public/images/` are CC BY 3.0 (Rushi Mehta, Wikimedia Commons); keep the credit in the footer. `public/images/nfsu-logo.png` is the official NFSU emblem (from its Wikipedia page, where it is marked non-free); confirm with the university before any public deployment.
+- Layout is fluid: the root font size scales with the viewport (`clamp()` on `:root`) and every size is in rem, so pages fill screens from 320px phones to 2560px monitors. Grid tracks use `minmax(min(Npx, 100%), 1fr)` so nothing forces sideways scrolling; keep to that pattern.
 - Copy should be plain, in sentence case, and name the action ("Send for approval", "Publish"). Error text says what happened and how to fix it.
 
 ## Things that are deliberately not built yet
 
-- Candidate chatbot (E3 in the team plan)
 - Celery: jobs run via `manage.py run_jobs` on cron
 - Nginx/TLS deployment files
 - Automated retention/deletion

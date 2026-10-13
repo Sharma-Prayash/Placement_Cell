@@ -5,6 +5,7 @@ import random
 from datetime import timedelta
 from decimal import Decimal
 
+from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
@@ -65,6 +66,7 @@ class Command(BaseCommand):
                 from apps.audit.models import AuditLog
                 AuditLog.objects.all()._raw_delete(AuditLog.objects.db)  # local reset only
             self._seed(password)
+        call_command("load_knowledge", stdout=self.stdout)  # interview-prep question bank for the assistant
         self.stdout.write(self.style.SUCCESS("Demo data loaded. Accounts (password = SEED_PASSWORD from .env):"))
         for u in User.objects.exclude(role=Role.STUDENT).order_by("role"):
             self.stdout.write(f"  {u.role:<12} {u.username}")
