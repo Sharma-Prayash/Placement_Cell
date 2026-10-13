@@ -1,0 +1,17 @@
+# Optional services for a production-like local run. SQLite works without any of this.
+#   docker compose up -d db redis
+#   then in backend/.env: DB_ENGINE=postgres, POSTGRES_PASSWORD=<same as below>, REDIS_URL=redis://localhost:6379/0
+services:
+  db:
+    image: postgres:16.4
+    environment:
+      POSTGRES_DB: nfsu_placement
+      POSTGRES_USER: nfsu_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in your shell or a .env next to this file}
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+  redis:
+    image: redis:7.4
+    ports: ["127.0.0.1:6379:6379"]
+volumes:
+  pgdata:

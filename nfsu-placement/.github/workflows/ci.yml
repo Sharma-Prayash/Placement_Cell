@@ -1,0 +1,29 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: backend } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m venv .venv && .venv/bin/pip install -r requirements.txt pip-audit==2.7.3
+      - name: Test-only secrets
+        run: |
+          echo "DJANGO_SECRET_KEY=ci-only-$(openssl rand -hex 16)" >> .env
+          echo "FIELD_ENCRYPTION_KEY=$(.venv/bin/python -c 'from cryptography.fernet import Fernet;print(Fernet.generate_key().decode())')" >> .env
+          echo "BLIND_INDEX_KEY=$(openssl rand -hex 32)" >> .env
+      - run: .venv/bin/python manage.py check --deploy --fail-level ERROR || true
+      - run: .venv/bin/python manage.py test tests
+      - run: .venv/bin/pip-audit -r requirements.txt
+  frontend:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: frontend } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: npm ci
+      - run: npm run build
+      - run: npm audit --audit-level=high
