@@ -24,7 +24,7 @@ Rules that keep it secure by construction:
 
 | App | Owns |
 |---|---|
-| `accounts` | User (one table, five roles), login with lockout and MFA, activation links, demo seed |
+| `accounts` | User (one table, five roles), login with lockout and an emailed sign-in code (or TOTP), activation links, demo seed |
 | `audit` | Append-only hash-chained `AuditLog`, `verify_audit_chain` |
 | `approvals` | `ChangeRequest` maker-checker, handlers per entity and action, sealing of sensitive fields |
 | `students` | `Student` (incl. CGPA, backlogs, 10th/12th, skills, consents), self-service, staff list, export, resumes |
@@ -73,4 +73,4 @@ Rules that keep it secure by construction:
 
 ## Production deployment notes
 
-Put Nginx in front with TLS and serve `frontend/dist` as static files. Proxy `/api` to gunicorn, set the `X-Real-IP` header, and set `DJANGO_DEBUG=false`. That enables HSTS, secure cookies and the SSL redirect. Also use `DB_ENGINE=postgres`, set `REDIS_URL` so rate limits are shared across workers, set `REQUIRE_STAFF_MFA=true`, schedule `run_jobs` every 5 minutes, and run nightly `scripts/backup.sh`.
+Put Nginx in front with TLS and serve `frontend/dist` as static files. Proxy `/api` to gunicorn with `proxy_set_header X-Real-IP $remote_addr`, list Nginx's address in `TRUSTED_PROXIES`, and set `DJANGO_DEBUG=false`. That enables HSTS, secure cookies and the SSL redirect. Also use `DB_ENGINE=postgres`, set `REDIS_URL` so rate limits are shared across workers, configure SMTP so sign-in codes reach users' official mailboxes, schedule `run_jobs` every 5 minutes, and run nightly `scripts/backup.sh`.

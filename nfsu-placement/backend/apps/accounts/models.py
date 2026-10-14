@@ -46,3 +46,27 @@ class User(AbstractUser):
     @property
     def is_placement_staff(self):
         return self.role in {Role.ADMIN, Role.OFFICER, Role.COORDINATOR}
+
+
+class LoginChallenge(models.Model):
+    """A pending second sign-in factor. For email codes only a keyed HMAC of the code is stored; the code itself
+    exists only in the email, so neither a database leak nor the audit log reveals it."""
+
+    class Channel(models.TextChoices):
+        EMAIL = "email", "Code sent by email"
+        TOTP = "totp", "Authenticator app"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="login_challenges")
+    channel = models.CharField(max_length=5, choices=Channel.choices)
+    code_hash = models.CharField(max_length=64, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    attempts = models.PositiveSmallIntegerField(default=0)
+    consumed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["user", "created_at"])]
+
+    @property
+    def is_open(self):
+        return self.consumed_at is None and self.expires_at > timezone.now()

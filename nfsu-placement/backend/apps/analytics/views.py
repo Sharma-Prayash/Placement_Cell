@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 
 from apps.audit import services as audit
 from core.permissions import COORDINATOR, IsStaff
+from core.ratelimit import ratelimit
 
 from .services import internal_report, public_report
 
@@ -12,6 +13,7 @@ class PublicStatsView(APIView):
     permission_classes = [AllowAny]
     authentication_classes = []
 
+    @ratelimit("public_stats", limit=60, window_seconds=60)  # the report is computed on each call
     def get(self, request):
         return Response(public_report())
 

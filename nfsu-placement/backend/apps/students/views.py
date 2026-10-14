@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from apps.audit import services as audit
 from apps.placements.models import Application
 from core.permissions import ADMIN, COORDINATOR, OFFICER, RECRUITER, IsStaff, IsStaffOrRecruiter, IsStudent
-from core.ratelimit import hit
+from core.ratelimit import hit, too_many
 
 from .models import Student
 from .serializers import SELF_EDITABLE, StaffStudentReadSerializer, StudentSelfSerializer
@@ -99,7 +99,7 @@ class ResumeDownloadView(APIView):
             if not student.consent_share_with_recruiters:
                 raise Http404
             if not hit(f"resume:{request.user.pk}", 60, 3600):
-                return Response({"detail": "Resume view limit reached for this hour."}, status=429)
+                return too_many("Resume view limit reached for this hour.", 3600)
             if not Application.objects.filter(student=student, drive__company=request.user.recruiter.company).exists():
                 raise Http404
         audit.log(request.user, "student.resume_viewed", "student", student.pk, request=request)

@@ -333,15 +333,32 @@ function Drives() {
 }
 
 /* ---------------------------------------------------------------- recruiters, bulletin, flags */
+const BLANK_RECRUITER = { company_name: "", website: "", contact_name: "", contact_email: "" };
+
 function Recruiters() {
-  const { data, err, load } = useLoad<any[]>("/staff/recruiter-requests?status=new", []);
-  const a = useAction(load);
-  const [f, setF] = useState({ company_name: "", website: "", contact_name: "", contact_email: "" });
+  const requests = useLoad<any[]>("/staff/recruiter-requests?status=new", []);
+  const accounts = useLoad<any[]>("/staff/recruiters", []);
+  const a = useAction(() => { requests.load(); accounts.load(); });
+  const [f, setF] = useState(BLANK_RECRUITER);
   const [reason, setReason] = useState("");
+  const data = requests.data;
+  const addDirectly = async (e: FormEvent) => {
+    e.preventDefault();
+    if (await a.run(() => propose("recruiter", "create", null, f, reason),
+      "Sent to Approvals. Another admin or an officer must approve it; once approved, the recruiter is emailed their Recruiter ID and a link to set a password.")) {
+      setF(BLANK_RECRUITER); setReason("");
+    }
+  };
   return (
-    <div className="split">
+    <div className="stack">
+      <dl className="kpis">
+        <Kpi icon="building" label="Recruiter accounts" value={accounts.data.length} tone={1} />
+        <Kpi icon="clock" label="Awaiting activation" value={accounts.data.filter((r) => !r.activated).length} tone={2} />
+        <Kpi icon="mail" label="New requests from the public form" value={data.length} tone={3} />
+      </dl>
+      <Errors lines={[...requests.err, ...accounts.err]} />{a.feedback}
+      <div className="split">
       <Section title="Interest from the public form">
-        <Errors lines={err} />{a.feedback}
         {data.length === 0 ? <Empty>No new requests.</Empty> : <ul className="cards">{data.map((r) => (
           <li key={r.id} className="change">
             <h3>{r.company_name}</h3>
@@ -356,15 +373,42 @@ function Recruiters() {
           </li>))}</ul>}
       </Section>
       <Section title="Add a recruiter directly">
-        <p className="muted small">Goes through approval. The recruiter receives an ID and a single-use link to set a password; no password is ever emailed.</p>
-        <form className="form" onSubmit={(e) => { e.preventDefault(); a.run(() => propose("recruiter", "create", null, f, reason), "Sent for approval."); }}>
-          <label>Company<input value={f.company_name} onChange={(e) => setF({ ...f, company_name: e.target.value })} required /></label>
-          <label>Website<input type="url" value={f.website} onChange={(e) => setF({ ...f, website: e.target.value })} /></label>
-          <label>Contact name<input value={f.contact_name} onChange={(e) => setF({ ...f, contact_name: e.target.value })} required /></label>
-          <label>Contact email<input type="email" value={f.contact_email} onChange={(e) => setF({ ...f, contact_email: e.target.value })} required /></label>
-          <label>Reason<input value={reason} onChange={(e) => setReason(e.target.value)} required minLength={5} /></label>
-          <button className="btn">Send for approval</button>
-        </form>
+        <div className="card">
+          <p className="muted small">For organisations you have already verified (for example after an MoU). It goes to Approvals: another
+            admin or an officer must approve it, never the person who proposed it. The recruiter then receives a Recruiter ID and a
+            single-use link to set a password; no password is ever emailed. An existing company name is reused.</p>
+          <form className="form" onSubmit={addDirectly}>
+            <label>Company<input value={f.company_name} onChange={(e) => setF({ ...f, company_name: e.target.value })} required maxLength={150} /></label>
+            <label>Website<input type="url" value={f.website} onChange={(e) => setF({ ...f, website: e.target.value })} placeholder="https://" /></label>
+            <label>HR contact name<input value={f.contact_name} onChange={(e) => setF({ ...f, contact_name: e.target.value })} required maxLength={120} /></label>
+            <label>Official contact email<input type="email" value={f.contact_email} onChange={(e) => setF({ ...f, contact_email: e.target.value })} required /></label>
+            <label>Reason (the approver sees this)<input value={reason} onChange={(e) => setReason(e.target.value)} required minLength={5} maxLength={300} placeholder="e.g. MoU signed on 10 Oct for the 2026–27 session" /></label>
+            <button className="btn"><Icon name="approve" />Send for approval</button>
+          </form>
+        </div>
+      </Section>
+      </div>
+
+      <Section title="Recruiter accounts">
+        {accounts.data.length === 0 ? <Empty>No recruiter accounts yet.</Empty> : (
+          <div className="table-wrap"><table>
+            <thead><tr><th>Recruiter ID</th><th>Company</th><th>Contact</th><th>Added via</th><th>Created</th><th>Status</th><th /></tr></thead>
+            <tbody>{accounts.data.map((r) => (
+              <tr key={r.id}>
+                <td><strong>{r.recruiter_code}</strong></td>
+                <td>{r.company}</td>
+                <td>{r.contact_name}<br /><span className="small muted">{r.email}</span></td>
+                <td className="small">{r.source}</td>
+                <td className="small">{when(r.created_at)}</td>
+                <td>{!r.is_active ? <Chip value="deregistered" label="Disabled" /> : r.activated ? <Chip value="active" label="Active" /> : <Chip value="awaiting" label="Awaiting activation" />}</td>
+                <td>{!r.activated && r.is_active && (
+                  <button className="btn-quiet btn-sm" onClick={() => a.run(() => api(`/staff/recruiters/${r.id}/resend-activation`, { method: "POST" }),
+                    `A new activation link was emailed to ${r.recruiter_code}.`)}><Icon name="mail" />Resend activation link</button>
+                )}</td>
+              </tr>
+            ))}</tbody>
+          </table></div>
+        )}
       </Section>
     </div>
   );

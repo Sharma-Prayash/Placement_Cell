@@ -15,6 +15,7 @@ from apps.policy.engine import BLOCK
 from apps.policy.services import evaluate_for
 from apps.students.views import own_student
 from core.permissions import ADMIN, OFFICER, RECRUITER, IsAdminOrOfficer, IsAnyMember, IsStudent
+from core.ratelimit import ratelimit
 
 from .models import Attendance, Post
 from .serializers import PostReadSerializer, PostWriteSerializer, PublicPostSerializer
@@ -29,6 +30,7 @@ class PublicBulletinView(APIView):
     permission_classes = [AllowAny]
     authentication_classes = []
 
+    @ratelimit("public_bulletin", limit=60, window_seconds=60)
     def get(self, request):
         qs = _visible_now().filter(visibility="public")[:30]
         return Response(PublicPostSerializer(qs, many=True).data)

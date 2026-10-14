@@ -194,11 +194,12 @@ def _flag_handler():
 
 def _recruiter_handler():
     from apps.recruiters.serializers import AdminRecruiterSerializer
-    from apps.recruiters.services import create_recruiter
+    from apps.recruiters.services import create_recruiter, ensure_email_free
 
     def prepare(action, entity_id, data):
         s = AdminRecruiterSerializer(data=data)
         s.is_valid(raise_exception=True)
+        ensure_email_free(s.validated_data["contact_email"])  # re-checked when applied, in create_recruiter()
         return None, dict(s.validated_data), "", None
 
     def apply(cr, actor):
@@ -225,10 +226,18 @@ def can_propose(user, course):
     return user.role == COORDINATOR and course and course == user.coordinator_course
 
 
+# Who may be the second person on each change. Recruiter onboarding is the officers' daily work (they already
+# verify public requests), so an officer may approve an admin's proposal and the other way round. That keeps
+# two different people on every change even where the cell has a single admin.
+OFFICER_APPROVABLE = {"recruiter"}
+
+
 def can_approve(user, cr):
     if user.pk == cr.proposer_id:
         return False
     if user.role == ADMIN:
+        return True
+    if user.role == OFFICER and cr.entity in OFFICER_APPROVABLE:
         return True
     return user.role == COORDINATOR and cr.entity in COURSE_SCOPED and cr.course == user.coordinator_course
 

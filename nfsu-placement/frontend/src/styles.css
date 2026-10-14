@@ -542,3 +542,4 @@ tbody tr:last-child td { border-bottom: 0; }
 .uj-input textarea { resize: none; max-height: 7rem; font-size: 0.88rem; border-radius: 12px; }
 .uj-input .btn { padding: 0.6rem; border-radius: 12px; }
 .uj-note { margin: 0; padding: 0 0.75rem 0.55rem; font-size: 0.68rem; color: var(--slate); background: var(--surface); max-width: none; }
+.otp-input { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.6rem; letter-spacing: 0.5em; text-align: center; padding: 0.6rem; }

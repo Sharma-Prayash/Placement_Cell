@@ -15,10 +15,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.audit import services as audit
-from core.permissions import STAFF_ROLES
-from core.ratelimit import client_ip, ratelimit
+from core.ratelimit import client_ip, hit, ratelimit, too_many
 
-from .models import User
+from . import mfa
+from .models import LoginChallenge, User
 
 GENERIC_LOGIN_ERROR = "That ID and password combination is not valid, or the account is locked."
 
@@ -35,19 +35,49 @@ def me_payload(user):
 class CsrfView(APIView):
     permission_classes = [AllowAny]
 
+    @ratelimit("csrf", limit=60, window_seconds=60)
     def get(self, request):
         return Response({"detail": "CSRF cookie set."})
 
 
+def _register_failure(user, request, action):
+    """Wrong passwords and wrong sign-in codes share one counter, so neither can be guessed past the lockout."""
+    user.failed_attempts += 1
+    if user.failed_attempts >= settings.LOGIN_MAX_FAILURES:
+        user.locked_until = timezone.now() + timedelta(minutes=settings.LOGIN_LOCK_MINUTES)
+        user.failed_attempts = 0
+    user.save(update_fields=["failed_attempts", "locked_until"])
+    audit.log(user, action, "user", user.pk, request=request)
+
+
+def _complete_login(request, user, method):
+    login(request, user)  # rotates the session key, preventing session fixation
+    user.failed_attempts = 0
+    user.locked_until = None
+    user.save(update_fields=["failed_attempts", "locked_until"])
+    if user.role == "recruiter" and hasattr(user, "recruiter") and not user.recruiter.activated_at:
+        user.recruiter.activated_at = timezone.now()
+        user.recruiter.save(update_fields=["activated_at"])
+    audit.log(user, "auth.login", "user", user.pk, after={"ip": client_ip(request), "second_factor": method}, request=request)
+    return Response(me_payload(user))
+
+
+def _username_key(request):
+    return str(request.data.get("username", "")).strip().lower()[:150]
+
+
 @method_decorator(csrf_protect, name="dispatch")
 class LoginView(APIView):
+    """Step 1: password. If the role needs a second factor, a code is emailed and the response says so;
+    the session is NOT signed in until step 2 (LoginVerifyView) succeeds."""
+
     permission_classes = [AllowAny]
 
-    @ratelimit("login", limit=20, window_seconds=300)
+    @ratelimit("login_ip", limit=20, window_seconds=300)
+    @ratelimit("login_user", limit=10, window_seconds=900, key=_username_key)  # spraying one account from many IPs
     def post(self, request):
         username = str(request.data.get("username", "")).strip()[:150]
         password = str(request.data.get("password", ""))[:256]
-        otp = str(request.data.get("otp", "")).strip()[:10]
         user = User.objects.filter(username=username).first()
 
         if user and user.is_locked:
@@ -57,34 +87,86 @@ class LoginView(APIView):
         auth_user = authenticate(request, username=username, password=password)
         if auth_user is None:
             if user:
-                user.failed_attempts += 1
-                if user.failed_attempts >= settings.LOGIN_MAX_FAILURES:
-                    user.locked_until = timezone.now() + timedelta(minutes=settings.LOGIN_LOCK_MINUTES)
-                    user.failed_attempts = 0
-                user.save(update_fields=["failed_attempts", "locked_until"])
-                audit.log(user, "auth.login_failed", "user", user.pk, request=request)
+                _register_failure(user, request, "auth.login_failed")
             return Response({"detail": GENERIC_LOGIN_ERROR}, status=401)
 
-        mfa_required = auth_user.mfa_enabled or (settings.REQUIRE_STAFF_MFA and auth_user.role in STAFF_ROLES | {"recruiter"})
-        if mfa_required:
-            if not auth_user.mfa_enabled:
-                return Response({"detail": "Your role requires two-factor authentication. Ask an administrator to enrol you.",
-                                 "mfa_setup_required": True}, status=403)
-            if not otp:
-                return Response({"detail": "Enter the 6-digit code from your authenticator app.", "otp_required": True}, status=401)
-            if not pyotp.TOTP(auth_user.mfa_secret).verify(otp, valid_window=1):
-                audit.log(auth_user, "auth.mfa_failed", "user", auth_user.pk, request=request)
-                return Response({"detail": "That code is not valid. Check your authenticator app and try again.", "otp_required": True}, status=401)
+        if not mfa.required(auth_user):
+            return _complete_login(request, auth_user, "none")
+        try:
+            challenge = mfa.start(auth_user, client_ip(request))
+        except mfa.TooManyCodes:
+            return too_many("Too many sign-in codes were sent to this account. Use the latest code or try again in an hour.", 3600)
+        except mfa.DeliveryError as exc:
+            audit.log(auth_user, "auth.mfa_delivery_failed", "user", auth_user.pk, request=request)
+            return Response({"detail": str(exc)}, status=503)
+        request.session[mfa.SESSION_KEY] = challenge.pk  # binds the code to this browser session
+        audit.log(auth_user, "auth.mfa_code_sent", "user", auth_user.pk, after={"channel": challenge.channel}, request=request)
+        return Response(mfa.describe(challenge), status=202)
 
-        login(request, auth_user)  # rotates the session key, preventing session fixation
-        auth_user.failed_attempts = 0
-        auth_user.locked_until = None
-        auth_user.save(update_fields=["failed_attempts", "locked_until"])
-        if auth_user.role == "recruiter" and hasattr(auth_user, "recruiter") and not auth_user.recruiter.activated_at:
-            auth_user.recruiter.activated_at = timezone.now()
-            auth_user.recruiter.save(update_fields=["activated_at"])
-        audit.log(auth_user, "auth.login", "user", auth_user.pk, after={"ip": client_ip(request)}, request=request)
-        return Response(me_payload(auth_user))
+
+def _pending(request):
+    pk = request.session.get(mfa.SESSION_KEY)
+    challenge = LoginChallenge.objects.select_related("user").filter(pk=pk).first() if pk else None
+    if challenge is None or not challenge.is_open or not challenge.user.is_active:
+        return None
+    return challenge
+
+
+EXPIRED = "This sign-in code has expired or was replaced. Sign in again to get a new one."
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class LoginVerifyView(APIView):
+    """Step 2: the 6-digit code from the email (or the authenticator app)."""
+
+    permission_classes = [AllowAny]
+
+    @ratelimit("login_verify", limit=20, window_seconds=300)
+    def post(self, request):
+        challenge = _pending(request)
+        if challenge is None:
+            return Response({"detail": EXPIRED, "restart": True}, status=400)
+        user = challenge.user
+        if user.is_locked:
+            return Response({"detail": GENERIC_LOGIN_ERROR, "restart": True}, status=401)
+        if not mfa.check(challenge, request.data.get("code", "")):
+            _register_failure(user, request, "auth.mfa_failed")
+            challenge.refresh_from_db()
+            left = max(0, settings.MFA_MAX_ATTEMPTS - challenge.attempts)
+            user.refresh_from_db()
+            if left == 0 or user.is_locked:
+                request.session.pop(mfa.SESSION_KEY, None)
+                return Response({"detail": "Too many wrong codes. Sign in again to get a new code.", "restart": True}, status=401)
+            return Response({"detail": f"That code is not right. {left} {'try' if left == 1 else 'tries'} left.",
+                             "attempts_left": left}, status=401)
+        request.session.pop(mfa.SESSION_KEY, None)
+        return _complete_login(request, user, challenge.channel)
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class LoginResendView(APIView):
+    """Email a fresh code (cancels the old one). Limited per account so the inbox cannot be flooded."""
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        challenge = _pending(request)
+        if challenge is None:
+            return Response({"detail": EXPIRED, "restart": True}, status=400)
+        if challenge.channel != LoginChallenge.Channel.EMAIL:
+            return Response({"detail": "Your account uses an authenticator app. Enter the code it shows."}, status=400)
+        user = challenge.user
+        if not hit(f"mfa_resend_gap:{user.pk}", 1, settings.MFA_RESEND_SECONDS):
+            return too_many(f"Wait {settings.MFA_RESEND_SECONDS} seconds before asking for another code.", settings.MFA_RESEND_SECONDS)
+        try:
+            new = mfa.start(user, client_ip(request))
+        except mfa.TooManyCodes:
+            return too_many("Too many codes requested for this account. Use the latest code or try again in an hour.", 3600)
+        except mfa.DeliveryError as exc:
+            return Response({"detail": str(exc)}, status=503)
+        request.session[mfa.SESSION_KEY] = new.pk
+        audit.log(user, "auth.mfa_code_sent", "user", user.pk, after={"channel": new.channel, "resend": True}, request=request)
+        return Response(mfa.describe(new), status=202)
 
 
 class LogoutView(APIView):

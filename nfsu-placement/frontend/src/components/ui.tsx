@@ -77,7 +77,7 @@ export function Kpi({ icon, label, value, tone = 1 }: { icon: IconName; label: s
 const CHIP_TONE: Record<string, string> = {
   accepted: "ok", selected: "ok", joined: "ok", approved: "ok", eligible: "ok", registered: "ok", open: "info", present: "ok",
   pending: "warn", applied: "info", shortlisted: "warn", required: "warn", submitted: "info",
-  declined: "bad", rejected: "bad", not_joined: "bad", ineligible: "bad", expired: "bad", closed: "bad", deregistered: "bad", unplaced: "warn", internship_only: "info", fte_only: "ok", internship_plus_fte: "ok",
+  active: "ok", awaiting: "warn", declined: "bad", rejected: "bad", not_joined: "bad", ineligible: "bad", expired: "bad", closed: "bad", deregistered: "bad", unplaced: "warn", internship_only: "info", fte_only: "ok", internship_plus_fte: "ok",
 };
 
 /** Small coloured status label. Display only; never used to decide anything. */

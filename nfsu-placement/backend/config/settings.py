@@ -153,9 +153,19 @@ RESUME_MAX_BYTES = 2 * 1024 * 1024
 DATA_UPLOAD_MAX_MEMORY_SIZE = 3 * 1024 * 1024
 
 # Project security knobs.
-REQUIRE_STAFF_MFA = env_bool("REQUIRE_STAFF_MFA", False)
-LOGIN_MAX_FAILURES = 5
+LOGIN_MAX_FAILURES = 5  # wrong passwords and wrong sign-in codes both count
 LOGIN_LOCK_MINUTES = 15
+
+# Second factor at sign-in. Roles listed here must confirm a 6-digit code emailed to their official address
+# (the student record's email for students, which students cannot change) unless they use an authenticator app.
+MFA_REQUIRED_ROLES = {r.strip() for r in env("MFA_REQUIRED_ROLES", "admin,officer,coordinator,recruiter,student").split(",") if r.strip()}
+MFA_CODE_TTL_MINUTES = 10
+MFA_MAX_ATTEMPTS = 5          # wrong codes allowed per emailed code
+MFA_RESEND_SECONDS = 60       # minimum gap between codes
+MFA_CODES_PER_HOUR = 5        # cap on codes emailed to one account per hour
+
+# Only these peers may set X-Real-IP (your Nginx). Empty means the TCP peer address is always used.
+TRUSTED_PROXIES = {p.strip() for p in env("TRUSTED_PROXIES", "").split(",") if p.strip()}
 PUBLIC_STATS_MIN_CELL = int(env("PUBLIC_STATS_MIN_CELL", "5"))
 CHANGE_REQUEST_TTL_HOURS = 48
 EXPORT_ROW_CAP = 2000

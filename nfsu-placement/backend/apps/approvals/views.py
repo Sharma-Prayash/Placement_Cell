@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.permissions import ADMIN, COORDINATOR, IsApprover, IsStaff
+from core.permissions import ADMIN, COORDINATOR, OFFICER, IsStaff
 
 from . import services
 from .models import ChangeRequest
@@ -28,6 +28,8 @@ class ChangeRequestListView(APIView):
         qs = ChangeRequest.objects.select_related("proposer", "approver")
         if u.role == COORDINATOR:
             qs = qs.filter(Q(course=u.coordinator_course) | Q(proposer=u))
+        elif u.role == OFFICER:
+            qs = qs.filter(Q(proposer=u) | Q(entity__in=services.OFFICER_APPROVABLE))
         elif u.role != ADMIN:
             qs = qs.filter(proposer=u)
         if request.query_params.get("status"):
@@ -49,7 +51,9 @@ class ChangeRequestListView(APIView):
 
 
 class ChangeRequestDecisionView(APIView):
-    permission_classes = [IsApprover]
+    """Any staff role may call it; services.can_approve() decides per change (role, scope, never the proposer)."""
+
+    permission_classes = [IsStaff]
 
     def post(self, request, pk, decision):
         cr = ChangeRequest.objects.filter(pk=pk).first()

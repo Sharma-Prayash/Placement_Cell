@@ -32,7 +32,7 @@ npm run dev | npm run build | npx tsc -b --noEmit
 
 On Windows, use `backend\.venv\Scripts\python.exe` instead of `.venv/bin/python`.
 
-`backend/.env` holds the secrets and is gitignored. If it is missing, run `./setup.sh`; never hard-code keys. Emails print to the Django console in development.
+`backend/.env` holds the secrets and is gitignored. If it is missing, run `./setup.sh`; never hard-code keys. Emails print to the Django console in development, including the 6-digit sign-in code every login needs (set `MFA_REQUIRED_ROLES=` empty in `.env` to switch codes off locally). Rate limits use `core.ratelimit.hit()`/`@ratelimit` and `client_ip()`; never read `X-Real-IP` or `REMOTE_ADDR` yourself.
 
 ## Layout
 
@@ -42,7 +42,7 @@ backend/
   config/urls.py       every endpoint in one file, grouped by audience (public, student, recruiter, staff)
   core/                permissions.py (deny-by-default role classes), fields.py (EncryptedTextField, blind_index),
                        ratelimit.py, sanitize.py, middleware.py (CSP etc.), exceptions.py
-  apps/accounts        User with roles; login, lockout, MFA, activation; management/commands/seed_demo.py
+  apps/accounts        User with roles; login, lockout, mfa.py (emailed sign-in codes, TOTP), activation; seed_demo
   apps/audit           AuditLog (append-only, hash chain); services.log(); verify_audit_chain
   apps/approvals       ChangeRequest + services.propose/approve/reject + HANDLERS registry
   apps/students        Student model, self-service, staff list, export, resumes
@@ -71,11 +71,11 @@ docs/                  ARCHITECTURE, POLICY, SECURITY, DEMO
 ## Non-negotiable rules
 
 1. **Every endpoint names its permission class** from `core/permissions.py`. Do not rely on the DRF default, and never use `AllowAny` except on public endpoints that also set `authentication_classes = []` and a rate limit.
-2. **Staff changes to students, offers, attendance excuses, flag waivers and admin-added recruiters go through maker-checker.** Call `approvals.services.propose(...)`. To support a new change type, add a handler to `HANDLERS` in `apps/approvals/services.py` with `prepare()`, which validates and returns `(before, proposed, course, preview)`, and `apply()`, which runs inside the approval transaction. Never write these records directly from a view.
+2. **Staff changes to students, offers, attendance excuses, flag waivers and admin-added recruiters go through maker-checker.** Who may be the second person is decided only in `approvals.services.can_approve()` (admins: anything; officers: recruiter additions; coordinators: their own programme). Call `approvals.services.propose(...)`. To support a new change type, add a handler to `HANDLERS` in `apps/approvals/services.py` with `prepare()`, which validates and returns `(before, proposed, course, preview)`, and `apply()`, which runs inside the approval transaction. Never write these records directly from a view.
 3. **Students have exactly two write paths:** `PATCH /api/student/me` (only fields in `SELF_EDITABLE`; anything else is a 400 plus an audit entry) and `POST /api/student/offers/<id>/respond`. Do not add student write paths to status, package, eligibility or placement data.
 4. **Resolve the student from the session** with `own_student(request)`, never from a URL or body ID. Objects the caller may not see return **404, not 403**, so their existence is not revealed.
 5. **Call `audit.log(actor, action, entity, entity_id, before, after, request)` in the same transaction as the change** for every write and every sensitive read (resume views, exports, candidate lists). Use dotted action names such as `offer.accepted` or `security.mass_assignment_blocked`. System jobs pass `actor=None`.
-6. **Never put sensitive values in the audit log, change requests, logs or error messages in plaintext.** Today that means mobile numbers, meeting URLs and MFA secrets. Use `EncryptedTextField` for new sensitive columns, add the field to `SENSITIVE_FIELDS` in approvals, and use `redact()` for anything shown or logged.
+6. **Never put sensitive values in the audit log, change requests, logs or error messages in plaintext.** Today that means mobile numbers, meeting URLs, MFA secrets and sign-in codes. Use `EncryptedTextField` for new sensitive columns, add the field to `SENSITIVE_FIELDS` in approvals, and use `redact()` for anything shown or logged.
 7. **The policy engine stays pure.** `apps/policy/engine.py` imports nothing from Django. Add a rule as a `Reason(code, severity, message)` with severity `block`, `flag` or `info`, then add rows to the case table in `tests/test_policy_engine.py`. Thresholds belong in `PolicyConfig`, not in code. Messages are full sentences a student or recruiter can understand.
 8. **Call the engine through `policy.services.evaluate_for()` wherever a decision is made** (apply, propose, approve, accept, join). The UI only displays verdicts; it never decides.
 9. **Recruiters see statistics, not secrets:** the category band only (never another company's name or exact CTC), contacts only after shortlisting, and only consenting students in the talent pool.

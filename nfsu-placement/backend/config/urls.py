@@ -15,6 +15,8 @@ urlpatterns = [
     # auth
     path("api/auth/csrf", acc.CsrfView.as_view()),
     path("api/auth/login", acc.LoginView.as_view()),
+    path("api/auth/login/verify", acc.LoginVerifyView.as_view()),
+    path("api/auth/login/resend", acc.LoginResendView.as_view()),
     path("api/auth/logout", acc.LogoutView.as_view()),
     path("api/auth/me", acc.MeView.as_view()),
     path("api/auth/activate", acc.ActivateView.as_view()),
@@ -51,6 +53,8 @@ urlpatterns = [
     path("api/staff/evaluate", pl.StaffEvaluateView.as_view()),
     path("api/staff/changes", appr.ChangeRequestListView.as_view()),
     path("api/staff/changes/<int:pk>/<str:decision>", appr.ChangeRequestDecisionView.as_view()),
+    path("api/staff/recruiters", rec.RecruiterListView.as_view()),
+    path("api/staff/recruiters/<int:pk>/resend-activation", rec.RecruiterResendActivationView.as_view()),
     path("api/staff/recruiter-requests", rec.RecruiterRequestListView.as_view()),
     path("api/staff/recruiter-requests/<int:pk>/<str:decision>", rec.RecruiterRequestDecisionView.as_view()),
     path("api/staff/bulletin/pending", bul.BulletinModerationView.as_view()),

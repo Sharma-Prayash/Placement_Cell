@@ -1,10 +1,11 @@
 # Demo script (about 8 minutes)
 
 Open three browser profiles or windows (admin, recruiter, student) and keep the backend terminal visible: emails print there.
+Every sign-in asks for a 6-digit code after the password; copy it from the "Your NFSU placement portal sign-in code" email in that terminal. Show once that a wrong code says how many tries are left, and that the code from one browser does not work in another.
 
 1. **Public overview** (signed out). Point out the stats: unique students placed vs offers made, CTC and stipend shown separately, and suppressed cells (`<5`). Then show the public bulletin.
 2. **Recruit at NFSU.** Submit the form. Submit it again from the same browser six times: the sixth is refused with 429. Show the notification email in the terminal.
-3. **Officer** (`officer.desai`): Console → Recruiters → Verify. The terminal shows the Recruiter ID and the single-use activation link. Open the link, set a password and sign in as the new recruiter.
+3. **Officer** (`officer.desai`): Console → Recruiters shows every recruiter account and whether it has been activated. To add one directly, an admin fills in "Add a recruiter directly" and an officer approves it in Approvals (nobody approves their own). Then verify the public request: the terminal shows the Recruiter ID and the single-use activation link. Open the link, set a password and sign in as the new recruiter.
 4. **Recruiter** (`REC-DEMO1`): open the Candidates page, then:
    - filter by CGPA 8+ and the skill "forensics"
    - show the verdict tags and their reasons (a student holding an FTE offer is blocked from another FTE role)

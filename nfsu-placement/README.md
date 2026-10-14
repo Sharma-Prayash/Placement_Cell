@@ -47,7 +47,7 @@ To use the Python environment manually: `source backend/.venv/bin/activate` (Win
 - **Reports** at university and programme level. Unique placed students and total offers are counted separately, and stipend is reported separately from CTC.
 - **Public overview** with sanitised aggregates. Any group under 5 students is suppressed.
 - **Security:**
-  - Argon2, account lockout, TOTP MFA, 15-minute idle sessions, CSRF protection, CSP
+  - Argon2, account lockout, a sign-in code emailed to the official address (or TOTP), 15-minute idle sessions, CSRF protection, CSP
   - encrypted columns with a blind index
   - a hash-chained audit log
   - maker-checker enforced by a database constraint

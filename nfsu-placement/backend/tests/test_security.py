@@ -2,6 +2,7 @@
 import io
 from datetime import timedelta
 
+from django.core import mail
 from django.core.cache import cache
 from django.db import IntegrityError, connection, transaction
 from django.test import TestCase, override_settings
@@ -33,10 +34,12 @@ class AuthenticationTests(TestCase):
     def test_password_hash_is_argon2_and_never_returned(self):
         self.assertTrue(self.admin.password.startswith("argon2"))
         c = APIClient()
-        r = c.post("/api/auth/login", {"username": "admin1", "password": f.PASSWORD}, format="json")
+        step1 = c.post("/api/auth/login", {"username": "admin1", "password": f.PASSWORD}, format="json")
+        r = c.post("/api/auth/login/verify", {"code": f.emailed_code()}, format="json")
         self.assertEqual(r.status_code, 200)
-        self.assertNotIn("password", r.json())
-        self.assertNotIn("argon2", r.content.decode())
+        for body in (step1.content.decode(), r.content.decode()):
+            self.assertNotIn("password", body)
+            self.assertNotIn("argon2", body)
 
     def test_brute_force_locks_account(self):
         c = APIClient()
@@ -49,10 +52,11 @@ class AuthenticationTests(TestCase):
 
     def test_session_cookie_is_httponly_and_dead_after_logout(self):
         c = APIClient()
-        c.post("/api/auth/login", {"username": "admin1", "password": f.PASSWORD}, format="json")
+        self.assertEqual(f.sign_in(c, "admin1").status_code, 200)
         cookie = c.cookies["sessionid"]
         self.assertTrue(cookie["httponly"])
         old = cookie.value
+        self.assertEqual(c.get("/api/auth/me").status_code, 200)  # signed in before logout
         c.post("/api/auth/logout")
         replay = APIClient()
         replay.cookies["sessionid"] = old
@@ -63,18 +67,18 @@ class AuthenticationTests(TestCase):
         r = c.post("/api/auth/login", {"username": "admin1", "password": f.PASSWORD}, format="json")
         self.assertEqual(r.status_code, 403)
 
-    @override_settings(REQUIRE_STAFF_MFA=True)
-    def test_staff_login_without_mfa_code_fails(self):
+    def test_authenticator_app_users_confirm_with_their_app(self):
         import pyotp
         self.admin.mfa_secret = pyotp.random_base32()
         self.admin.mfa_enabled = True
         self.admin.save()
         c = APIClient()
         r = c.post("/api/auth/login", {"username": "admin1", "password": f.PASSWORD}, format="json")
-        self.assertEqual(r.status_code, 401)
-        self.assertTrue(r.json().get("otp_required"))
-        code = pyotp.TOTP(self.admin.mfa_secret).now()
-        r = c.post("/api/auth/login", {"username": "admin1", "password": f.PASSWORD, "otp": code}, format="json")
+        self.assertEqual(r.status_code, 202)
+        self.assertEqual(r.json()["channel"], "totp")
+        self.assertEqual(len(mail.outbox), 0)  # no email when an app is enrolled
+        self.assertEqual(c.get("/api/auth/me").status_code, 403)
+        r = c.post("/api/auth/login/verify", {"code": pyotp.TOTP(self.admin.mfa_secret).now()}, format="json")
         self.assertEqual(r.status_code, 200)
 
 

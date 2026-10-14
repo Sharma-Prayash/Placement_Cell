@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 
 from apps.audit import services as audit
 from core.permissions import IsAdminOrOfficer, IsAnyMember
-from core.ratelimit import client_ip, hit
+from core.ratelimit import client_ip, hit, too_many
 from core.sanitize import clean_text
 
 from . import llm, service
@@ -31,7 +31,7 @@ class QuestionSerializer(serializers.Serializer):
 def _ask(request, user, bucket):
     limit, window = settings.ASSISTANT_RATE_LIMIT
     if not hit(bucket, limit, window):
-        return Response({"detail": "You are asking very quickly. Wait a few minutes and try again."}, status=429)
+        return too_many("You are asking very quickly. Wait a few minutes and try again.", window)
     s = QuestionSerializer(data=request.data)
     s.is_valid(raise_exception=True)
     return Response(service.answer(user, s.validated_data["message"]))
